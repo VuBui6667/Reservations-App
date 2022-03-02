@@ -1,0 +1,27 @@
+.date-picker {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.date-enty {
+    width: 20px;
+}
+
+.date-prevArrow {
+    position: absolute;
+    left: 0;
+    padding: 5px;
+}
+
+.date-nextArrow {
+    position: absolute;
+    right: 0;
+    padding: 5px;
+}
+
+.date-icon {
+    position: absolute;
+    right: 30px;
+    top: 6px;
+}

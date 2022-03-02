@@ -1,0 +1,237 @@
+.navigate-edit-reserv {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 10px;
+    transition: 1s;
+    :hover {
+        cursor: pointer;
+        opacity: 0.8;
+    }
+    .save-edit-reserv {
+        color: #7C69EF;
+        text-decoration: underline;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.info-reserv {
+    text-align: center;
+    .title-reserv {
+        font-weight: 400;
+        color: #1B2A4E;
+        font-size: 25px;
+        line-height: 34px;
+        :nth-child(2) {
+            font-weight: 600;
+        }
+    }
+    .reserv-id {
+        color: #506690;
+        font-weight: 400;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    .reserv-contact {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin: 10px 20px;
+        color: #506690;
+        font-weight: 400;
+        font-size: 16px;
+        div:nth-child(1) {
+            display: flex;
+            align-items: center;
+        }
+        div:nth-child(2) {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+}
+
+.reserv-status {
+    width: 300px;
+    height: 50px;
+    background: #F1F4F8;
+    margin: 0 auto;
+    font-weight: 600;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    color: #506690;
+    .css-1s2u09g-control {
+        background-color: inherit;
+        border: none;
+        color: #506690;
+        :focus {
+            border: none;
+        }
+    }
+}
+
+.details-edit-reserv {
+    color: #1B2A4E;
+    margin: 30px 30px;
+    .lock-content-detail {
+        background-color: rgba(0, 40, 100, 0.12);;
+        border-radius: 3px;
+        width: 150px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        padding-left: 10px;
+        font-weight: 400;
+        font-size: 16px;
+        color: #1B2A4E;
+    }
+    .detail-edit-reserv {
+        display: flex;
+        align-items: center;
+        justify-content:space-between;
+        margin-bottom: 40px;
+        .title-detail {
+            display: flex;
+            align-items: center;
+            span {
+                margin-left: 5px;
+                font-weight: 600;
+                font-size: 18px;
+            }
+        }
+        .content-detail {
+            background-color: #fff;
+            border: 1px solid rgb(204, 204, 204);
+            border-radius: 3px;
+            width: 150px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            padding-left: 10px;
+            font-weight: 400;
+            font-size: 16px;
+            .rmdp-input {
+                display: none;
+                .rmdp-calendar  {
+                    background-color: #1B2A4E;
+                }
+            }
+        }
+    }
+    .field-edit-reserv {
+        margin-bottom: 30px;
+        .lock-occasion-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            .occasion-item {
+                width: 140px;
+                height: 44px;
+                background: #fff;
+                border-radius: 4px;
+                color: #1B2A4E;
+                border: 1px solid rgba(0, 40, 100, 0.12);
+                display: flex;
+                align-items: center;
+                margin-top: 10px;
+                font-weight: 600;
+                padding-left: 15px;
+            }
+        }
+        .occasion-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            .occasion-item {
+                width: 140px;
+                height: 44px;
+                background: #fff;
+                border-radius: 4px;
+                color: #7C69EF;
+                border: 2px solid #7C69EF;
+                display: flex;
+                align-items: center;
+                margin-top: 10px;
+                font-weight: 600;
+                padding-left: 15px;
+            }
+        }
+        .lock-input {
+            width: 306px;
+            height: 60px;
+            margin-top: 10px;
+            border-radius: 3px;
+            font-weight: 400;
+            font-size: 16px;
+            display: flex;
+            padding-left: 10px;
+            align-items: center;
+            background-color: rgba(0, 40, 100, 0.12);
+        }
+        div:nth-child(1) {
+            display: flex;
+            align-items: center;
+            span {
+                margin-left: 5px;
+                font-weight: 600;
+                font-size: 18px;
+            }
+        }
+        input {
+            background-color: #fff;
+            border: 1px solid rgba(0, 40, 100, 0.25);
+            width: 306px;
+            height: 60px;
+            margin-top: 10px;
+            border-radius: 3px;
+            font-weight: 400;
+            font-size: 16px;
+            display: flex;
+            padding-left: 10px;
+            overflow-wrap: break-word;
+        }
+    }
+    .reserv-payment {
+        margin-top: 30px;
+        display: flex;
+        justify-content: space-between;
+        div:nth-child(1) {
+            display: flex;
+            align-items: center;
+            span {
+                margin-left: 5px;
+                font-weight: 600;
+                font-size: 18px;
+            }
+        }
+        div:nth-child(2) {
+            font-size: 16px;
+            font-weight: 400;
+        }
+    }
+}
+
+.footer-edit-reserv {
+    display: flex;
+    justify-content: space-around;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    margin-bottom: 30px;
+    .cancel-reserv {
+        background: #DF4759;
+        height: 50px;
+        width: 320px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 3px;
+        text-align: center;
+        cursor: pointer;
+    }
+}
