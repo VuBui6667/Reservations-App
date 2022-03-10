@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from "react"
+import React, {useContext} from "react"
 import './modalCancel.scss'
 import message_Error from '../../image/message_error.png'
 import {CancelReserv, ReservNotify, ResetContext, NotifyContext} from '../../App'
@@ -7,9 +7,9 @@ import reservationAPI from "../../api/reservationAPI"
 const ModalCancel = () => {
     const {cancelReserv, setCancelReserv} = useContext(CancelReserv)
     const {reset, setReset} = useContext(ResetContext)
-    const {notify, setNotify} = useContext(NotifyContext)
+    const {setNotify} = useContext(NotifyContext)
     const {reservEdit, setReservEdit} = useContext(ReservNotify)
-    const [nameReserv, setNameReserv] = useState()
+    // const [nameReserv, setNameReserv] = useState()
 
     const changeStatus = async() => {
         try {

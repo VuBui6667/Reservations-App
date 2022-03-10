@@ -9,6 +9,20 @@ a {
     color: inherit;
 }
 
+
+.number-type-service {
+    width: 26px;
+    height: 26px;
+    background: rgba(0, 40, 100, 0.12);
+    border-radius: 50%;
+    color: #1B2A4E;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    padding-bottom: 2px;
+}
+
 #sidebar {
     overflow-y: scroll;
     position: fixed;
@@ -26,6 +40,7 @@ a {
     color: white;
     position: sticky;
     top: 0;
+    z-index: 10;
 }
 
 .info-item {
@@ -86,6 +101,7 @@ a {
     justify-content: space-between;
     position: sticky;
     top: 110px;
+    z-index: 10;
 }
 
 #react-select-5-listbox {
@@ -163,10 +179,10 @@ a {
         display: flex;
         align-items: center;
         background-color: #F1F4F8;
-        border-radius: 4px;
+        border-radius: 6px;
         position: absolute;
         right: 14px;
-        z-index: -1;
+        z-index: 2;
     }
     .reservation-required {
         margin-top: 0px;
@@ -263,5 +279,6 @@ a {
     border-top: 2px #ccc solid;
     border-right: 2px #ccc solid;
     height: fit-content;
+    z-index: 99;
 }
 

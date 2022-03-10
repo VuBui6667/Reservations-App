@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from "react";
+import React, {useState, useRef, useEffect, useContext} from "react";
 import './modalBooking.scss'
 import DatePicker from "react-multi-date-picker";
 import { DateObject } from "react-multi-date-picker";
@@ -8,6 +8,7 @@ import opacity from "react-element-popper/animations/opacity"
 import Select from 'react-select'
 import userAPI from "../../api/userAPI";
 import reservationAPI from "../../api/reservationAPI"
+import { ResetContext } from '../../App'
 
 const ModalBooking = (props) => {
     const [methodAdd, setMethodAdd] = useState(true)
@@ -17,21 +18,24 @@ const ModalBooking = (props) => {
     const [type, setType] = useState(0)
     const date = new DateObject()
     const [customers, setCustomers] = useState([])
-    const [resetValue, setResetValue] = useState()
     const [occasionSelect, setOccasionSelect] = useState([])
+    const setShowModal = props.setShowModal
+    const showModal = props.showModal
+    const {reset, setReset} = useContext(ResetContext)
  
     const [reservation, setReservation] = useState({
         adultsReservation: "",
         childrenReservation: "",
         timeReservation: "",
         table: "Unassigned",
+        numberChairs: "",
         request: "",
         note: "",
-        dates: "",
+        dates: date.day + " " + date.month.shortName + " " + date.year,
         customerReservation: "",
         statusReservation: "Booked",
         occasion: ""
-    })
+    }, [showModal])
     useEffect(() => {
         const fetchCustomers = async () =>  {
           try {
@@ -46,22 +50,13 @@ const ModalBooking = (props) => {
     
     const fetchReservations = async () => {
         try {
-            const response = await reservationAPI.post(reservation)
-            console.log(response)
+            await reservationAPI.post(reservation)
+            setShowModal(!showModal)
+            setReset(!reset)
         } catch(error) {
             console.log(error)
         }
     }
-
-    
-    // const customersValue = (firstName, lastName, contact) => {
-    //     return (
-    //         <>
-    //         <div>{firstName} {lastName}</div>
-    //         <div>{contact}</div>
-    //         </>
-    //     )
-    // }
 
     const customerValue = 
         customers.map((customer) => (
@@ -118,6 +113,27 @@ const ModalBooking = (props) => {
         {value: '17', label: '122', id:'table'},
         {value: '18', label: '123', id:'table'},
     ]
+
+    const chairs = [
+        '6',
+        '4',
+        '14',
+        '14',
+        '8',
+        '8',
+        '6',
+        '6',
+        '8',
+        '6',
+        '6',
+        '2',
+        '2',
+        '2',
+        '2',
+        '4',
+        '12',
+        '12',
+    ]
     const weekdays = [
         'Mon',
         'Tue',
@@ -161,11 +177,21 @@ const ModalBooking = (props) => {
         const newReservation={...reservation}
         newReservation[options.id] = options.label
         setReservation(newReservation)
+        if(options.id === "table") {
+            console.log(options.value);
+            const newReservation={...reservation}
+            newReservation["numberChairs"] = chairs[options.value+1]
+            setReservation(newReservation)
+        }
     }
 
     const handleDate = (value) => {
         const newReservation={...reservation}
-        newReservation["dates"] = value.day + " " + value.month.shortName + " " + value.year
+        if(value.year) {
+            newReservation["dates"] = value.day + " " + value.month.shortName + " " + value.year   
+        } else {
+            newReservation["dates"] = date.day+value + " " + date.month.shortName + " " + date.year
+        }
         setReservation(newReservation)
     }
 
@@ -234,9 +260,9 @@ const ModalBooking = (props) => {
                                 weekdaysShort.map((weekday, idx) => {
                                     if(weekday === date.weekDay.shortName) {
                                         return (
-                                            <>
+                                            <div style={{display: "flex"}} key={idx}>
                                             <div className="reservation-date-item"
-                                            onClick = {() => setDateSelect(0)}
+                                            onClick = {() => (setDateSelect(0), handleDate(date))}
                                             style={{
                                                 color: dateSelect === 0 ? '#fff' : '#1B2A4E',
                                                 backgroundColor: dateSelect === 0 ? '#7C69EF' : '#fff'
@@ -246,7 +272,7 @@ const ModalBooking = (props) => {
                                                 <p>{date.month.shortName}</p>
                                             </div>
                                             <div className="reservation-date-item"
-                                            onClick = {() => setDateSelect(1)}
+                                            onClick = {() => (setDateSelect(1), handleDate(1))}
                                             style={{
                                                 color: dateSelect === 1 ? '#fff' : '#1B2A4E',
                                                 backgroundColor: dateSelect === 1 ? '#7C69EF' : '#fff'
@@ -256,7 +282,7 @@ const ModalBooking = (props) => {
                                                 <p>{date.month.shortName}</p>
                                             </div>
                                             <div className="reservation-date-item"
-                                            onClick = {() => setDateSelect(2)}
+                                            onClick = {() => (setDateSelect(2), handleDate(2))}
                                             style={{
                                                 color: dateSelect === 2 ? '#fff' : '#1B2A4E',
                                                 backgroundColor: dateSelect === 2 ? '#7C69EF' : '#fff'
@@ -266,7 +292,7 @@ const ModalBooking = (props) => {
                                                 <p>{date.month.shortName}</p>
                                             </div>
                                             <div className="reservation-date-item"
-                                            onClick = {() => setDateSelect(3)}
+                                            onClick = {() => (setDateSelect(3), handleDate(3))}
                                             style={{
                                                 color: dateSelect === 3 ? '#fff' : '#1B2A4E',
                                                 backgroundColor: dateSelect === 3 ? '#7C69EF' : '#fff'
@@ -276,7 +302,7 @@ const ModalBooking = (props) => {
                                                 <p>{date.month.shortName}</p>
                                             </div>
                                             <div className="reservation-date-item"
-                                            onClick = {() => setDateSelect(4)}
+                                            onClick = {() => (setDateSelect(4), handleDate(4))}
                                             style={{
                                                 color: dateSelect === 4 ? '#fff' : '#1B2A4E',
                                                 backgroundColor: dateSelect === 4 ? '#7C69EF' : '#fff'
@@ -286,7 +312,7 @@ const ModalBooking = (props) => {
                                                 <p>{date.month.shortName}</p>
                                             </div>
                                             <div className="reservation-date-item"
-                                            onClick = {() => setDateSelect(5)}
+                                            onClick = {() => (setDateSelect(5), handleDate(1))}
                                             style={{
                                                 color: dateSelect === 5 ? '#fff' : '#1B2A4E',
                                                 backgroundColor: dateSelect === 5 ? '#7C69EF' : '#fff'
@@ -295,7 +321,7 @@ const ModalBooking = (props) => {
                                                 <p>{date.day+5}</p>
                                                 <p>{date.month.shortName}</p>
                                             </div>
-                                            </>
+                                            </div>
                                         )
                                     }
                                 })
@@ -460,7 +486,7 @@ const ModalBooking = (props) => {
                             <div className="occasion-container">
                                     {
                                         occasions.map((occasion, index) => (
-                                            <div className="occasion-item" 
+                                            <div className="occasion-item" key={index}
                                             onClick={() => handleOccasion(index)}
                                             style={{background: occasionSelect.includes(occasions[index]) ? "#7C69EF" : null,
                                                     color: occasionSelect.includes(occasions[index]) ? "white" : "#7C69EF"}}
@@ -546,7 +572,8 @@ const ModalBooking = (props) => {
                 </div>
             </div>
             <div className="booking-footer">
-                <div className="booking-cancel" onClick={() => this.forceUpdate()} onClick={() => props.setShowModal(!props.showModal)}>Cancel Reservation</div>
+            {/* this.forceUpdate() */}
+                <div className="booking-cancel" onClick={() => {setShowModal(!showModal)}}>Cancel Reservation</div>
                 <div className="booking-add" onClick={() => fetchReservations()}>Add Reservation</div>
             </div>
         </div>

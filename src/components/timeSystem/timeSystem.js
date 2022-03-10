@@ -25,9 +25,10 @@ export default function TimeSystem() {
         setInterval(() => {
             let today = new Date()
             let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
-            setTime(timeToday)
-        });
+            setTime("12:40")        
+          })
     }, 5000)
+
 
 
     function getTwentyFourHourTime(paramTime) { 
@@ -47,16 +48,7 @@ export default function TimeSystem() {
     const handleTimeReserv = async(index, status) => {
         try {
             await reservationAPI.patch(index+1, {statusReservation: status})
-            setReset(true)
-        } catch(error) {
-            console.log(error)
-        }
-      }
-
-      const handleNoShow = async(index) => {
-        try {
-            await reservationAPI.patch(index+1, {statusReservation: "No Show"})
-            setReset(true)
+            setReset(!reset)
         } catch(error) {
             console.log(error)
         }

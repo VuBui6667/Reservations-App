@@ -3,7 +3,7 @@ import DatePicker from 'react-multi-date-picker'
 import './editReserv.scss'
 import Select from 'react-select'
 import reservationAPI from '../../api/reservationAPI'
-import { NotifyContext, ReservNotify, CancelReserv } from "../../App"
+import { NotifyContext, ReservNotify, CancelReserv, TableFlow } from "../../App"
 import {MdOutlineChair} from "react-icons/md"
 import warningSign from '../../image/warning-sign.png'
 
@@ -20,10 +20,10 @@ const EditReserv = (props) => {
     const [reservation, setReservartion] = useState(reserv)
     const [occasionSelect, setOccasionSelect] = useState(reserv.occasion)
 
-    const {notify, setNotify} = useContext(NotifyContext)
-    const {reservEdit, setReservEdit} = useContext(ReservNotify)
+    const {setNotify} = useContext(NotifyContext)
+    const {setReservEdit} = useContext(ReservNotify)
     const {cancelReserv, setCancelReserv} = useContext(CancelReserv)
-
+    const {setTableFlow} = useContext(TableFlow)
     const occasions = [
         'Casual',
         'Birthday',
@@ -120,7 +120,7 @@ const EditReserv = (props) => {
 
     const saveReserv = async() => {
         try {
-        await reservationAPI.patch(idxReserv+1, reservation)
+        await reservationAPI.patch(idxReserv, reservation)
         setReset(!reset)
         setToggleEdit(!toggleEdit)
         setNotify(true)
@@ -140,8 +140,11 @@ const EditReserv = (props) => {
         <div className="edit-reserv">
             <div className="header-edit-reserv">
                 <div className="navigate-edit-reserv">
-                    <div className="back-reserv" onClick={() => setToggleEdit(!toggleEdit)}><box-icon name='arrow-back'></box-icon></div>
-                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}onClick={saveReserv}><box-icon name='save' color='#7C69EF'></box-icon> Save Changes</div>
+                    <div className="back-reserv" onClick={() => (setToggleEdit(!toggleEdit), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
+                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
+                        onClick={() => (saveReserv(), setTableFlow(null))}>
+                        <box-icon name='save' color='#7C69EF'></box-icon> 
+                    Save Changes</div>
                     {/* onClick={saveReserv, notifyEditReserv} */}
                 </div>
                 <div className="info-reserv">
@@ -381,8 +384,8 @@ const EditReserv = (props) => {
                         { reserv.statusReservation === "Seated" || reserv.statusReservation === "Cancelled" || reserv.statusReservation === "No Show" || reserv.statusReservation === "Completed"?
                                 <div className="lock-occasion-container">
                                 {
-                                    occasions.map((occasion) => (
-                                        <div className="occasion-item"
+                                    occasions.map((occasion, idx) => (
+                                        <div className="occasion-item" key={idx}
                                         style={{background: occasionSelect.includes(occasion) ? "rgba(0, 40, 100, 0.12)" : null,
                                                 border: occasionSelect.includes(occasion) ? "none" : null}}
                                         >{occasion}</div>
@@ -392,8 +395,8 @@ const EditReserv = (props) => {
                         :
                         <div className="occasion-container">
                             {
-                                occasions.map((occasion) => (
-                                    <div className="occasion-item"
+                                occasions.map((occasion, idx) => (
+                                    <div className="occasion-item" key={idx}
                                     style={{background: occasionSelect.includes(occasion) ? "#7C69EF" : null,
                                             color: occasionSelect.includes(occasion) ? "#fff" : null}}
                                     onClick={() => handleOccasion(occasion)}

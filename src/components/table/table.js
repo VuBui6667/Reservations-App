@@ -3,6 +3,7 @@ import React, {useEffect, useState, useContext} from 'react'
 import './table.scss'
 import reservationAPI from '../../api/reservationAPI'
 import { ResetContext } from "../../App"
+import { DatesReserv, TableClashed } from '../../App'
 
 const Chair = (props) => {
     return (
@@ -26,19 +27,21 @@ const Table = (props) => {
 
     const [reservations, setReservations] = useState(null)
     // const [containerTable, setContainerTable] = useState(null)
-    const {reset, setReset} = useContext(ResetContext)
+    const {reset} = useContext(ResetContext)
+    const {datesReserv} = useContext(DatesReserv)
+    const {tableClashed} = useContext(TableClashed)
 
     useEffect(() => {
         const fetchReservations = async () =>  {
         try {
-            const response = await reservationAPI.getAll()
+            const response = await reservationAPI.get(datesReserv)
             setReservations(response)
         } catch(error) {
             console.log(error)
         }
         }
         fetchReservations()
-    },[reset])
+    },[reset, datesReserv])
 
     if(!reservations) {
         return <div></div>
@@ -87,19 +90,24 @@ const Table = (props) => {
                 <div className="table" style={styleTable} key={props.indexKey}>{props.numberTable}
                     {
                         [...Array(numberChair)].map((i, idx) => 
-                            <Chair key={i} styleChair={styleChairs} idxKey={i}/>
+                            <Chair key={idx} styleChair={styleChairs} idxKey={i}/>
                         )
                     }        
                     {
-                        reservations.map((reservation) => ( 
-                            <>
-                            {reservation.table === props.numberTable ?
+                        reservations.map((reservation, idx) => ( 
+                            <div key={idx} style={{display: "flex", justifyContent: "center"}}>
+                            {reservation.table === props.numberTable && 
+                            (reservation.statusReservation === "Booked" || reservation.statusReservation === "Confirmed" ||
+                            reservation.statusReservation === "Late" || reservation.statusReservation === "Seated")?
                             // style={{display: reservation.table === props.numberTable ? "flex" : "none"}}
                             <div className="time-table" 
-                                style={{background: reservation.statusReservation === "Late" ? "#FFEFE5" : null,
-                                        color: reservation.statusReservation === "Late" ? "#FF5C00" : null}}>
+                                style={{background: reservation.statusReservation === "Late" ? "#FFEFE5" : 
+                                        tableClashed.includes(reservation.table) ? "#DF4759" : null,
+                                        color: reservation.statusReservation === "Late" ? "#FF5C00" :
+                                        tableClashed.includes(reservation.table) ? "#fff" : null}}>
                                 {reservation.timeReservation}</div>
-                            :null}</>
+                            :null}
+                            </div>
                         ))
                     }
                 </div>

@@ -6,15 +6,14 @@ import ModalBooking from '../components/modalBooking/modalBooking'
 import '../components/zoom/zoom.scss'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";  
 // import notifyEditAPI from '../api/notifyEditAPI';
-import { ResetContext, NotifyContext, ReservNotify } from '../App'
+import { NotifyContext, ReservNotify, TimeReserv } from '../App'
 
 function Home() {
   const [showModal, setShowModal] = useState(false)
-  // const [notify, setNotify] = useState(false)
-  const [closeNotify, setCloseNotify] = useState(false)
-  const {reset, setReset} =   useContext(ResetContext)
+  // const {reset, setReset} =   useContext(ResetContext)
   const {notify, setNotify} = useContext(NotifyContext)
-  const {reservEdit, setReservEdit} = useContext(ReservNotify)
+  const {reservEdit} = useContext(ReservNotify)
+  const {time} = useContext(TimeReserv)
 
   setTimeout(
     function() {
@@ -57,7 +56,9 @@ function Home() {
       </TransformWrapper>
       <StatusTable />
       {showModal ? <ModalBooking showModal={showModal} setShowModal={setShowModal} styleName="animate__fadeInUp"/>: <ModalBooking styleName="animate__fadeOutDown"/>}
-      <div className="add-new" onClick={() => setShowModal(!showModal)}>{showModal ? <box-icon name='x' size="md" color="white" style={{marginTop: "10px"}}></box-icon> : "+"}</div>
+      {time > "09:00" ?
+        <div className="add-new" onClick={() => setShowModal(!showModal)}>{showModal ? <box-icon name='x' size="md" color="white" style={{marginTop: "10px"}}></box-icon> : "+"}</div>
+      : <div className="add-new" style={{opacity: "0.5"}}>+</div>}
       </div>
   )
 }

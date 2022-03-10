@@ -15,23 +15,37 @@ export const NotifyContext = createContext("")
 export const ReservNotify = createContext("")
 export const CancelReserv = createContext("")
 export const TimeReserv = createContext("")
-
+export const DatesReserv = createContext("")
+export const TableClashed = createContext("")
+export const TableFlow = createContext("")
+ 
 
 function App() {
-  const [reset, setReset] = useState(false)
+  const [reset, setReset] = useState(true)
   const [notify, setNotify] = useState(false)
   const [reservEdit, setReservEdit] = useState()
   const [cancelReserv, setCancelReserv] = useState(false)
   const [time, setTime] = useState()
+  const [tableClashed, setTableClashed] = useState([])
+  const [tableFlow, setTableFlow] = useState([])
+    var today = new Date().toLocaleDateString('en-GB', {
+      day : 'numeric',
+      month : 'short',
+      year : 'numeric'
+    }).split(' ').join(' ');
+  const [datesReserv, setDatesReserv] = useState(today)
 
   return (
     <div className="app">
+    <DatesReserv.Provider value={{datesReserv, setDatesReserv}}>
     <TimeReserv.Provider value={{time, setTime}}>
     <IconContext.Provider value={{color: "#506690", className: "global-class-name"}}>
     <ResetContext.Provider value={{reset, setReset}}>
     <NotifyContext.Provider value={{notify, setNotify}}>
     <ReservNotify.Provider value={{reservEdit, setReservEdit}}>
     <CancelReserv.Provider value={{cancelReserv, setCancelReserv}}>
+    <TableClashed.Provider value={{tableClashed, setTableClashed}}>
+    <TableFlow.Provider value={{tableFlow, setTableFlow}}>
       <Header/>
       <div>
       <Sidebar/>
@@ -39,12 +53,15 @@ function App() {
       <TimeSystem />
       <Home />
       </div>
+    </TableFlow.Provider>
+    </TableClashed.Provider>
     </CancelReserv.Provider>
     </ReservNotify.Provider>
     </NotifyContext.Provider>
     </ResetContext.Provider>
     </IconContext.Provider>
     </TimeReserv.Provider>
+    </DatesReserv.Provider>
     </div>
   )
 }

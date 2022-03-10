@@ -9,8 +9,8 @@ const reservationAPI = {
         const url= '/reservations'
         return axiosClient.get(url)
     },
-    get: (id) => {
-        const url = `/reservations/${id}`
+    get: (dates) => {
+        const url = `/reservations?dates=${dates}`
         return axiosClient.get(url)
     },
     patch: (id, data) => {

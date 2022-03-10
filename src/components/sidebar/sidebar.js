@@ -10,33 +10,32 @@ import {ResetContext, ReservNotify, NotifyContext} from '../../App'
 import {MdOutlineChair} from "react-icons/md"
 import holdReserv from '../../image/holdReserv.png'
 import warningSign from '../../image/warning-sign.png'
-import { TimeReserv } from '../../App'
+import { TimeReserv, DatesReserv, TableClashed, TableFlow } from '../../App'
 
 const Sidebar = () => {
   
     const [value, setValue] = useState(false)
     const [toggleReserv, setToggleReserv] = useState(false)
-    // const [editReserv, setEditReserv] = useState("false")
     const [showDetail, setShowDetail] = useState([])
-    // const [showConfirm, setShowConfirm] = useState([])
-    // const [showSeat, setShowSeat] = useState([])
     const [showEdit, setShowEdit] = useState()
     const {reset, setReset} =   useContext(ResetContext)
-    const {reservEdit, setReservEdit} = useContext(ReservNotify)
-    const {notify, setNotify} = useContext(NotifyContext)
+    const {setReservEdit} = useContext(ReservNotify)
+    const {setNotify} = useContext(NotifyContext)
     const [search, setSearch] = useState("")
     const [filterSearch, setFilterSearch] = useState([])
-    const [filterService, setFilterService] = useState("all")
-    const {time, setTime} = useContext(TimeReserv)
+    const [filterService, setFilterService] = useState("upcomming")
+    const {time} = useContext(TimeReserv)
+    const {datesReserv} = useContext(DatesReserv)
+    const [newReserv, setNewReserv] = useState([])
+    const [numberBooking, setnumberBooking] = useState(0)
+    const [numberCover, setNumberCover] = useState(0)
+    const [numberUpcomming, setNumberUpcomming] = useState(0)
+    const [numberSeated, setNumberSeated] = useState(0)
+    const [numberCompleted, setNumberCompleted] = useState(0)
+    const [numberAbsent, setNumberAbsent] = useState(0)
+    const {tableClashed, setTableClashed} = useContext(TableClashed)
+    const {setTableFlow} = useContext(TableFlow)
 
-
-    const options = [
-        { value: "all", label: "All Service"},
-        { value: 'upcomming', label: 'Upcomming'},
-        { value: 'seated', label: 'Seated' },
-        { value: 'completed', label: 'Completed' },
-        { value: 'absent', label: 'Absent'},
-    ]
 
     const statusReserv = [
       'Booked',
@@ -49,21 +48,22 @@ const Sidebar = () => {
     useEffect(() => {
       const fetchReservations = async () =>  {
         try {
-          const response = await reservationAPI.getAll()
+          const response = await reservationAPI.get(datesReserv)
           setReservations(response)
         } catch(error) {
           console.log(error)
         }
       }
       fetchReservations()
-    },[reset])
+    },[reset, datesReserv])
   
     const updateStatusReserv = async(StatusReserv, id) => {
       try {
-      const response = await reservationAPI.patch(id+1, {statusReservation: StatusReserv})
-      setReset(!reset)
-      setReservEdit(response)
-      setNotify(true)
+        const response = await reservationAPI.patch(id, {statusReservation: StatusReserv})
+        setReset(!reset)
+        setReservEdit(response)
+        setNotify(true)
+        // setTableFlow(null)
       } catch(error) {
         console.log(error)
       }
@@ -94,36 +94,68 @@ const Sidebar = () => {
       }
     }
 
-    const [subReserv, setSubReserv] = useState([])
+    useEffect(() => {
+      setNumberUpcomming(0)
+      setNumberSeated(0)
+      setNumberCompleted(0)
+      setNumberAbsent(0)
+      reservations.forEach(reservation => {
+        if(reservation.statusReservation === "Booked" || reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Late") {
+          setNumberUpcomming(prevNumber => prevNumber+1)
+        } else if(reservation.statusReservation === "Seated") {
+          setNumberSeated(prevNumber => prevNumber+1)
+        } else if(reservation.statusReservation === "Completed") {
+          setNumberCompleted(prevNumber => prevNumber+1)
+        } else if(reservation.statusReservation === "No Show" || reservation.statusReservation === "Cancelled") {
+          setNumberAbsent(prevNumber => prevNumber+1)
+        }
+      })
+    }, [reservations])
 
+    const options = [
+      { value: 'upcomming', label: <div style={{display: "flex"}}>Upcomming <div className="number-type-service">{numberUpcomming}</div></div>},
+      { value: 'seated', label: <div style={{display: "flex"}}>Seated <div className="number-type-service">{numberSeated}</div></div>},
+      { value: 'completed', label: <div style={{display: "flex"}}>Completed <div className="number-type-service">{numberCompleted}</div></div>},
+      { value: 'absent', label: <div style={{display: "flex"}}>Absent <div className="number-type-service">{numberAbsent}</div></div>}
+  ]
 
-    // useEffect(() => {
-    //   reservations.map(reservation => {
-    //     if(filterService === "all") {
-    //       setSubReserv((oldArray) => [...oldArray, reservation])
-    //     } else if (filterService === "upcomming") {
-    //       if(reservation.statusReservation === "Booked" || reservation.statusReservation === "Confirmed") {
-    //         setSubReserv((oldArray) => [...oldArray, reservation])
-    //       }
-    //     } else if (filterService === "seated") {
-    //       if(reservation.statusReservation === "Seated") {
-    //         setSubReserv((oldArray) => [...oldArray, reservation])
-    //       }
-    //     } else if (filterService === "completed") {
-    //       if(reservation.statusReservation === "Completed") {
-    //         setSubReserv((oldArray) => [...oldArray, reservation])
-    //       }
-    //     } else if (filterService === "absent") {
-    //       if(reservation.statusReservation === "Cancelled") {
-    //         setSubReserv((oldArray) => [...oldArray, reservation])
-    //       }
-    //     }
-    //   })
-    // }, [filterService, reservations])
+    useEffect(() => {
+      setNumberCover(0)
+      setNewReserv(
+        reservations.filter((reservation, idx) => {
+          setnumberBooking(idx+1)
+          setNumberCover((numberCover) => {
+            return numberCover + reservation.childrenReservation + reservation.adultsReservation
+          })
+          if(filterService ===  "upcomming") {
+            return (
+              reservation.statusReservation === "Booked" ||
+              reservation.statusReservation === "Confirmed" ||
+              reservation.statusReservation === "Late"
+            )
+          } else if(filterService === "seated") {
+            return (
+              reservation.statusReservation === "Seated"
+            )
+          } else if(filterService === "completed") {
+            return (
+              reservation.statusReservation === "Completed"
+            )
+          } else if(filterService === "absent") {
+            return (
+              reservation.statusReservation === "No Show" ||
+              reservation.statusReservation === "Cancelled"
+            )
+          } else {
+            return false
+          }
+        })
+      )
+    }, [filterService, reservations])
 
     useEffect(() => {
       setFilterSearch(
-        reservations.filter(reservation => {
+        newReserv.filter(reservation => {
           let nameReserv = reservation.customerReservation.firstName + reservation.customerReservation.lastName
           return (
             nameReserv.toLowerCase().includes( search.toLowerCase() ) || 
@@ -131,7 +163,24 @@ const Sidebar = () => {
           )
         })
       )
-    }, [search, reservations])
+    }, [search, newReserv])
+
+    useEffect(() => {
+      setTableClashed([])
+      reservations.forEach((reservation, index) => {
+        let count = 0
+        reservations.forEach((reserv, idx) => {
+          if(reservation.table === reserv.table) {
+            count++
+          }
+        })
+        if(count !== 1) {
+          if(!tableClashed.includes(reservation.table)) {
+            setTableClashed((prevTable) => [...prevTable, reservation.table])
+          }
+        }
+      })
+    }, [reservations, reset])
 
 
     
@@ -141,10 +190,10 @@ const Sidebar = () => {
             <div>
                 <p className="info-item">
                   <box-icon name='book-open' color='white'></box-icon>
-                Bookings</p>
+                {numberBooking} Bookings</p>
                 <p className="info-item">
                   <box-icon name='group' color='white'></box-icon>
-                Covers</p>
+                {numberCover}Covers</p>
             </div>
             <input className="search-info" placeholder='Search by name or table number' 
                   value={search} onChange={e => setSearch(e.target.value)}>  
@@ -159,7 +208,7 @@ const Sidebar = () => {
             <Select 
                 options={options} 
                 defaultValue={options[0]}
-                onChange={(e) => setFilterService(e.label)}
+                onChange={(e) => setFilterService(e.value)}
                 className="sidebar-info-type"
                 styles={{
                   control: (provided, state) => ({
@@ -210,11 +259,12 @@ const Sidebar = () => {
             filterSearch.map((reservation, index) => {
               let numberPeople = reservation.adultsReservation + reservation.childrenReservation
               return (
-                <>
-                <div className="container-reservation" key={index} onClick={() => handleShowReserv(index)}>
+                <div key={index}>
+                <div className="container-reservation" key={index} onClick={() => handleShowReserv(index)} 
+                style={{background: tableClashed.includes(reservation.table) ? "#FFEEEB" : null}}>
                   <span className="first-name">{reservation.customerReservation.firstName} </span>
                   <span className="last-name">{reservation.customerReservation.lastName}</span>
-                  <span className="time-booking">
+                  <span className="time-booking" style={{color: tableClashed.includes(reservation.table) ? "#DF4759" : null}}>
                     <box-icon name='phone' color='#506690'></box-icon>
                     {reservation.timeReservation}</span>
                   <div>
@@ -223,9 +273,10 @@ const Sidebar = () => {
                       {numberPeople}</p>
                     <p className="number-table" 
                       style={{color: reservation.table === "Unassigned" && 
-                                     reservation.statusReservation !== "Cancelled" ? "#DF4759" 
+                                     reservation.statusReservation !== "Cancelled" ||
+                                     tableClashed.includes(reservation.table) ? "#DF4759" 
                             : null}}>
-                      {reservation.table === "Unassigned" && reservation.statusReservation !== "Cancelled" ?
+                      {reservation.table === "Unassigned" && reservation.statusReservation !== "Cancelled"  || tableClashed.includes(reservation.table) ?
                         <MdOutlineChair style={{color: "#DF4759", fontSize: "20px", marginRight: "5px"}}/> :
                         <MdOutlineChair style={{fontSize: "20px", marginRight: "5px"}}/>
                       }
@@ -239,7 +290,8 @@ const Sidebar = () => {
                                                               background:
                                                                 reservation.statusReservation === "Cancelled" || reservation.statusReservation === "No Show" ? "#FFF6F5" : 
                                                                 reservation.statusReservation === "Completed" ? "#F1FFF6" :
-                                                                reservation.statusReservation === "Late" ? "#FFF3EC" : null}}>
+                                                                reservation.statusReservation === "Late" ? "#FFF3EC" : null,
+                                                              padding: "4px 8px"}}>
                       {reservation.statusReservation === "Booked" ? 
                          <box-icon name='check' color="#506690" style={{marginRight:"5px"}}></box-icon> :
                          reservation.statusReservation === "Confirmed" ?
@@ -261,16 +313,20 @@ const Sidebar = () => {
                   </div>
                   <div className="reservation-required" style={{display: toggleReserv || showDetail.includes(index) ? "none" : "flex"}}>
                     <div className="required-title">
-                      {reservation.request && reservation.occasion ? 
+                      {reservation.request || reservation.occasion[0] ? 
                         <box-icon name='purchase-tag' color='#506690' size="sm"></box-icon> 
                       : null}
                       <p>
+                      {reservation.occasion ?
+                      <>
                         {
                           reservation.occasion.map((occasionItem, idx) => (
-                            <>{idx === 0 ? occasionItem : (", "+occasionItem)}</>
-                          ))
+                            <div style={{margin: "0px"}} key={idx}>{idx === 0 ? occasionItem : (", "+occasionItem)}</div>
+                          )) 
                         }
-                        {reservation.request ? ", Special Req." : null}</p>
+                      </> : null
+                      }
+                        {reservation.request && reservation.occasion[0] ? ", Special Req." : reservation.request ? "Special Req." : null}</p>
                     </div>
                   </div>
                   <div className="reservation-more" 
@@ -283,12 +339,15 @@ const Sidebar = () => {
                     <div className="req-title">
                       <box-icon name='purchase-tag' color='#506690' ></box-icon>
                       <p>
+                      {reservation.occasion[0] ?
+                      <>
                         {
                           reservation.occasion.map((occasionItem, idx) => (
-                            <>{idx === 0 ? occasionItem : (", "+occasionItem)}</>
+                            <div key={idx} style={{margin: "0px"}}>{idx === 0 ? occasionItem : (", "+occasionItem)}</div>
                           ))
                         }
-                        {reservation.request ? ", Special Req" : null}</p>
+                      </>: reservation.request ? null : "None"}
+                      {reservation.request && reservation.occasion[0] ? ", Special Req" : reservation.request ? "Special Req" : null}</p>
                     </div>
                     </div>
                     {reservation.request ?
@@ -303,29 +362,29 @@ const Sidebar = () => {
                     <div className="deposit">{numberPeople} x $50 = ${numberPeople*50}</div>
                     <div className="controls-reservation" style={{display: showDetail.includes(index) ? 'flex' : 'none'}}>
                       <div className="control-reservation" 
-                      onClick={() => updateStatusReserv(statusReserv[1], index)}
+                      onClick={() => updateStatusReserv(statusReserv[1], reservation.id)}
                       style={{display: (reservation.statusReservation !== "Booked") ? "none" : "flex"}}>
                         <box-icon name='check-double' color="#fff" size='md'></box-icon>
-                        <p>{statusReserv[1]}</p>
+                        <p>Confirmed</p>
                       </div> 
                       <div className="control-reservation" 
-                      onClick={() => updateStatusReserv(statusReserv[2], index)}
+                      onClick={() => updateStatusReserv(statusReserv[2], reservation.id)}
                       style={{width: reservation.statusReservation === "Confirmed" ||
                                      reservation.statusReservation === "No Show" ? "50%" : null, 
                               display: reservation.statusReservation === "Seated" || 
                                        reservation.statusReservation === "Cancelled" ||
                                        reservation.statusReservation === "Completed" ||
-                                       (reservation.statusReservation === "No Show" && time >= "14:00")
+                                       (reservation.statusReservation === "No Show" && (time >= "14:00" || time <= "12:00"))
                                        ? "none" : "flex"}}>
                         <MdOutlineChair style={{fontSize: "36px", color: "#fff"}}/>
-                        <p>Seat</p>
+                        <p>Seated</p>
                       </div>
                       <div className="control-reservation" 
-                      onClick={() => handleShowEdit(index)}
+                      onClick={() => (handleShowEdit(index), setTableFlow(reservation))}
                       style={{width: reservation.statusReservation === "Seated" ||
                                      reservation.statusReservation === "Cancelled" ||
                                      reservation.statusReservation === "Completed" ||
-                                     (reservation.statusReservation === "No Show" && time >= "14:00") ? "100%" : 
+                                     (reservation.statusReservation === "No Show" && (time >= "14:00" || time <= "12:00")) ? "100%" : 
                                      reservation.statusReservation === "Confirmed" || 
                                      (reservation.statusReservation === "No Show" && time <= "14:00") ? "50%" : null}}>
                         <box-icon name='edit' color="#fff" size="md"></box-icon>
@@ -334,10 +393,7 @@ const Sidebar = () => {
                       <div className="control-reservation" 
                       
                       style={{width: reservation.statusReservation === "Late" ? "33.33%" : null, 
-                              display: reservation.statusReservation === "Seated" || 
-                                       reservation.statusReservation === "Cancelled" || 
-                                       reservation.statusReservation === "Completed" ||
-                                       reservation.statusReservation === "No Show" ? "none" : "flex"}}>
+                              display: reservation.statusReservation === "Late" ? "flex" : "none"}}>
                         <img src={holdReserv} style={{width: "40px"}} alt=""/>
                         <p>Hold</p>
                       </div>
@@ -349,12 +405,12 @@ const Sidebar = () => {
                 style={{display: showEdit === index ? 'block' : 'none'}}> 
                 {showEdit === index ?
                   <EditReserv 
-                  idxReserv={index} editReserv={reservation} 
+                  idxReserv={reservation.id} editReserv={reservation} 
                   toggoleEdit={showEdit} setToggleEdit={setShowEdit}
                   setReset={setReset} reset={reset}/>
                 :null}
                 </div>
-                </>
+                </div>
                 )
             })
           }

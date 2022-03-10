@@ -5,34 +5,41 @@ import transition from "react-element-popper/animations/transition"
 import opacity from "react-element-popper/animations/opacity"
 import './datepicker.css'
 import DatePickerHeader from "react-multi-date-picker/plugins/date_picker_header"
+import { useContext } from 'react'
+import { DatesReserv } from "../../App"
 
 //It is better to put this array outside the main component.
-const months = [
-  ["Jan", "January"], //[["name","shortName"], ... ]
-  ["Feb", "February"],
-  ["Mar", "March"],
-  ["Apr", "April"],
-  ["May", "May"],
-  ["Jun", "june"],
-  ["Jul", "July"],
-  ["Aug", "August"],
-  ["Sep", "September"],
-  ["Oct", "Octobrr"],
-  ["Nov", "November"],
-  ["Dec", "December"],
-]
-const weekDays = [
-  ["Saturday", "Sun"],
-  ["Sunday", "Mon"], //[["name","shortName"], ... ]
-  ["Monday", "Tue"],
-  ["Tuesday", "Wed"],
-  ["Wednesday", "Thu"],
-  ["Thursday", "Fri"],
-  ["Friday", "Sat"],
-]
+// const months = [
+//   ["Jan", "January"], //[["name","shortName"], ... ]
+//   ["Feb", "February"],
+//   ["Mar", "March"],
+//   ["Apr", "April"],
+//   ["May", "May"],
+//   ["Jun", "june"],
+//   ["Jul", "July"],
+//   ["Aug", "August"],
+//   ["Sep", "September"],
+//   ["Oct", "Octobrr"],
+//   ["Nov", "November"],
+//   ["Dec", "December"],
+// ]
+// const weekDays = [
+//   ["Saturday", "Sun"],
+//   ["Sunday", "Mon"], //[["name","shortName"], ... ]
+//   ["Monday", "Tue"],
+//   ["Tuesday", "Wed"],
+//   ["Wednesday", "Thu"],
+//   ["Thursday", "Fri"],
+//   ["Friday", "Sat"],
+// ]
 
 export default function Datepicker() {
-  const [value, setValue] = useState(new Date())
+  const {setDatesReserv} = useContext(DatesReserv)
+  const [value, setValue] = useState({ 
+    value: new Date(),
+    format: "dddd, D MMM YYYY",
+    onChange: (date) => setDatesReserv(date.day + " " + date.month.shortName + " " + date.year),
+  });
   return (
     <div className="date-picker">
         <div className="date-prevArrow"><box-icon name='chevron-left' ></box-icon></div>
@@ -40,16 +47,16 @@ export default function Datepicker() {
         plugins={[
             <DatePickerHeader style={{backgroundColor: "#7C69EF"}} />
           ]}
-        value={value}
-        onChange={setValue}
+        {...value}
+        onValueChange={setValue} 
         onKeyDown={"return false"}
         animations={[
             opacity(), 
             transition({ from: 35, duration: 800 })
         ]} 
-        months={months}
-        weekDays={weekDays}
-        format="dddd, DD MMMM YYYY"
+        // months={months}
+        // weekDays={weekDays}
+        // format="dddd, DD MMMM YYYY"
         style={{ 
             width: "265px", 
             height: "40px", 

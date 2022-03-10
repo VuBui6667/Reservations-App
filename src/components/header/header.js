@@ -8,22 +8,24 @@ import { TimeReserv } from '../../App'
 
 
 const Header = () => {
-    const [show, setShow] = useState(false)
+    const [show] = useState(false)
     const options = [
         { value: 'breakfast', label: 'Breakfast Service'},
         { value: 'lunch', label: 'Lunch Service'},
         { value: 'dinner', label: 'Dinner Service'}
     ]
-    const {time, setTime} = useContext(TimeReserv)
+    const {time} = useContext(TimeReserv)
     return (
         <div className="header" style={show ? { display:'none'} : {}}>
             <div className="header-icon">
                 <box-icon color='#869AB8'name='menu' size='md' type='logo' ></box-icon>
                 <p>Home</p>
             </div>
+            <div>{time}</div>
             <div className="header-navbar">
                 <div className="header-date nav-item">
-                    <Datepicker />
+                    <Datepicker 
+                    />
                 </div>
                 <div className="header-type-service nav-item">
                 <Select 

@@ -2,6 +2,7 @@ import React, {useEffect, useState, useContext} from "react"
 import Table from '../table/table'
 import reservationAPI from '../../api/reservationAPI'
 import { ResetContext, TimeReserv } from "../../App"
+import { DatesReserv, TableClashed, TableFlow } from "../../App"
 
 
 
@@ -9,7 +10,11 @@ const Tables = () => {
     const [reservations, setReservations] = useState(null)
     const [containerTable, setContainerTable] = useState(null)
     const {reset, setReset} = useContext(ResetContext)
-    const {time, setTime} = useContext(TimeReserv)
+    const {time} = useContext(TimeReserv)
+    const {datesReserv} = useContext(DatesReserv)
+    const [idxSelect, setIdxSelect] = useState([])
+    const {tableClashed} = useContext(TableClashed)
+    const {tableFlow} = useContext(TableFlow)
 
     const numberTables = [
         "105",
@@ -32,40 +37,100 @@ const Tables = () => {
         "123"
     ]
 
-
     useEffect(() => {
         const fetchReservations = async () =>  {
         try {
-            const response = await reservationAPI.getAll()
+            const response = await reservationAPI.get(datesReserv)
             setReservations(response)
             setContainerTable(document.getElementsByClassName("table"))
-            if(containerTable[0] !== undefined) {
+            if(containerTable !== null) {
                 handleTable()
+                handleOver()
             }
         } catch(error) {
             console.log(error)
         }
         }
         fetchReservations()
-    },[reset, containerTable])
+    },[containerTable, tableFlow, datesReserv, reset])
+
+    // const [precentReserv, setPrecentReserv] = useState([0])
+    // const [idx, setIdx] = useState(0)
+
+    function addMinutes(paramTime, minute) {
+        var t1 = new Date("1/1/2022 " + paramTime);
+        var t2 = new Date(t1.getTime() + minute*60000)
+        return t2.getHours() + ':' + ('0'+t2.getMinutes()).slice(-2); 
+    }
 
     if(!reservations) {
         return <div>Loadding....</div>
     } 
 
-    const handleTable = () => {
-        reservations.map((reservation, index) => {
-            numberTables.map((numberTable, tableIdx) => {
-                if(reservation.table === numberTable && time >= "12:00" && time <= "14:00" && reservation.statusReservation !== "No Show") {
-                    if(reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Late") {
-                        containerTable[tableIdx].style.background="#A260DD"
-                    } else {
-                        containerTable[tableIdx].style.background="#A9EAFF"
+    const handleOver = () => {
+        numberTables.forEach((numberTable, tableIdx) => {
+            const containerChair = containerTable[tableIdx].getElementsByClassName("chair")
+            if(containerTable[tableIdx].style.background==="rgb(255, 255, 255)" || tableFlow.table === numberTable) {
+                if(containerChair.length < (tableFlow.adultsReservation + tableFlow.childrenReservation)) {
+                        setIdxSelect((prevIdx) => [...prevIdx, tableIdx])
+                    for(let i=0; i<containerChair.length; i++) {
+                        containerChair[i].style.background="rgba(223, 71, 89, 0.7)"
                     }
-                    const numberPeople = reservation.adultsReservation + reservation.childrenReservation
-                    const containerChair = containerTable[tableIdx].getElementsByClassName("chair")
+                    containerTable[tableIdx].style.color="rgba(223, 71, 89, 0.5)"
+                }
+            }
+        })
+    }
+
+    const handleTable = () => {
+        reservations.forEach((reservation, index) => {
+            const numberPeople = reservation.adultsReservation + reservation.childrenReservation
+            numberTables.forEach((numberTable, tableIdx) => {
+                const containerChair = containerTable[tableIdx].getElementsByClassName("chair")
+                if(tableFlow) {
+                    if(tableFlow.table === numberTable) containerTable[tableIdx].style.boxShadow= "0 0 0 3px #FFA4A4"
+                } 
+                else {
+                    containerTable[tableIdx].style.boxShadow=null
+                    containerTable[tableIdx].style.color=null
+                    if(idxSelect.includes(tableIdx)) {
+                        for(let i=0; i<containerChair.length; i++) {
+                            containerChair[i].style.background=null
+                        }
+                    }
+                }
+                if(reservation.table === numberTable && time >= "12:00" && time <= "14:00" &&
+                   (reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Seated")) {
+                    if(reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Late") {
+                        if(tableClashed.includes(reservation.table) || containerChair.length < numberPeople) {
+                            containerTable[tableIdx].style.background="#DF4759"
+                            containerTable[tableIdx].style.color="#fff"
+                        } else {
+                            containerTable[tableIdx].style.background="#A260DD"
+                        }
+                    } else if (reservation.statusReservation === "Seated") {
+                            let timeReserv = reservation.timeReservation
+                            if (addMinutes(timeReserv, 40) <= time) {
+                                containerTable[tableIdx].style.backgroundImage=`linear-gradient(to top,#a9eaff 83.333%, #d4f4ff 83.333%, #d4f4ff)`
+                            } else if(addMinutes(timeReserv, 30) <= time) {
+                                containerTable[tableIdx].style.backgroundImage=`linear-gradient(to top,#a9eaff 66.666%, #d4f4ff 66.666%, #d4f4ff)`
+                            } else if(addMinutes(timeReserv, 20) <= time) {
+                                containerTable[tableIdx].style.backgroundImage=`linear-gradient(to top,#a9eaff 50%, #d4f4ff 50%, #d4f4ff)`
+                            } else if(addMinutes(timeReserv, 10) <= time) {
+                                containerTable[tableIdx].style.backgroundImage=`linear-gradient(to top,#a9eaff 33.333%, #d4f4ff 33.333%, #d4f4ff)`
+                            } else {
+                                containerTable[tableIdx].style.backgroundImage=`linear-gradient(to top,#a9eaff 16.666%, #d4f4ff 16.666%, #d4f4ff)`
+                            }
+                    }
                     for(let i=0; i<numberPeople; i++) {
                         containerChair[i].style.background="#007296"
+                    }
+                }
+                if(containerTable[tableIdx].outerText[4] === undefined && containerTable[tableIdx].style.background !== "rgb(255, 255, 255)") {
+                    setReset(!reset)
+                    containerTable[tableIdx].style.background = "#fff"
+                    for(let i=0; i<containerChair.length; i++) {
+                        containerChair[i].style.background="#747281"
                     }
                 }
             })
