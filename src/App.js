@@ -8,6 +8,7 @@ import './App.css'
 import ModalCancel from './components/modalCancel/modalCancel.js'
 import { IconContext } from 'react-icons'
 import TimeSystem from './components/timeSystem/timeSystem.js'
+import ModalWarning from './components/modalWarning/modalWarning.js'
 
 
 export const ResetContext = createContext("")
@@ -18,6 +19,8 @@ export const TimeReserv = createContext("")
 export const DatesReserv = createContext("")
 export const TableClashed = createContext("")
 export const TableFlow = createContext("")
+export const Skeleton = createContext("")
+export const WarnContext = createContext("")
  
 
 function App() {
@@ -28,6 +31,8 @@ function App() {
   const [time, setTime] = useState()
   const [tableClashed, setTableClashed] = useState([])
   const [tableFlow, setTableFlow] = useState([])
+  const [skeleton, setSkeleton] = useState(true)
+  const [warning, setWarning] = useState(false)
     var today = new Date().toLocaleDateString('en-GB', {
       day : 'numeric',
       month : 'short',
@@ -46,13 +51,18 @@ function App() {
     <CancelReserv.Provider value={{cancelReserv, setCancelReserv}}>
     <TableClashed.Provider value={{tableClashed, setTableClashed}}>
     <TableFlow.Provider value={{tableFlow, setTableFlow}}>
+    <Skeleton.Provider value={{skeleton, setSkeleton}}>
+    <WarnContext.Provider value={{warning, setWarning}}>
       <Header/>
       <div>
       <Sidebar/>
       {reservEdit ? <ModalCancel/> : null}
+      {warning ? <ModalWarning/> : null}
       <TimeSystem />
       <Home />
       </div>
+    </WarnContext.Provider>
+    </Skeleton.Provider>
     </TableFlow.Provider>
     </TableClashed.Provider>
     </CancelReserv.Provider>

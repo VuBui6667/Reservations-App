@@ -1,0 +1,85 @@
+.modal-cancel {
+    .layout-modal {
+        position: absolute;
+        top: 0;
+        z-index: 100;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: #000;
+        opacity: 0.5;
+    }
+    .container-modal-cancel { 
+        position: absolute;
+        top: 20%;
+        left: 33.33%;
+        z-index: 100;
+        width: 600px;
+        height: 300px;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #1B2A4E;
+        border-radius: 4px;
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        .title-cancel {
+            font-weight: 700;
+            font-size: 28px;
+            margin-top: 20px;
+        }
+        .sub-title-cancel {
+            margin-top: 14px;
+            font-size: 20px;
+            font-weight: 400;
+            .warn-title {
+                font-weight: 700;
+                color: #1B2A4E;
+            }
+        }
+        .control-cancel {
+            display: flex;
+            flex-direction: row;
+            margin-top: 25px;
+            .deny-cancel {
+                width: 240px;
+                height: 45px;
+                background-color: #D9E2EF;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-right: 10px;
+                border-radius: 4px;
+                color: #1B2A4E;
+                font-weight: 600;
+                font-size: 18px;
+                transition: 0.5s;
+            }
+            .deny-cancel:hover {
+                cursor: pointer;
+                opacity: 0.8;
+                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            }
+            .accept-cancel {
+                width: 240px;
+                height: 45px;
+                background-color: #DF4759;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-left: 10px;
+                border-radius: 4px;
+                color: #fff;
+                font-weight: 600;
+                font-size: 18px;
+                transition: 0.5s;
+            }
+            .accept-cancel:hover {
+                cursor: pointer;
+                opacity: 0.8;
+                box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            }
+        }
+    }
+}

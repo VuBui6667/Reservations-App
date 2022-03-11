@@ -11,6 +11,7 @@ import {MdOutlineChair} from "react-icons/md"
 import holdReserv from '../../image/holdReserv.png'
 import warningSign from '../../image/warning-sign.png'
 import { TimeReserv, DatesReserv, TableClashed, TableFlow } from '../../App'
+import { DateObject } from "react-multi-date-picker";
 
 const Sidebar = () => {
   
@@ -34,8 +35,20 @@ const Sidebar = () => {
     const [numberCompleted, setNumberCompleted] = useState(0)
     const [numberAbsent, setNumberAbsent] = useState(0)
     const {tableClashed, setTableClashed} = useContext(TableClashed)
-    const {setTableFlow} = useContext(TableFlow)
+    const {tableFlow, setTableFlow} = useContext(TableFlow)
 
+    const date = new DateObject()
+
+    const addMinutes = (paramTime, minute) => {
+      var t1 = new Date("1/1/2022 " + paramTime);
+      var t2 = new Date(t1.getTime() + minute*60000)
+      return t2.getHours() + ':' + ('0'+t2.getMinutes()).slice(-2); 
+    }
+
+    const getTwentyFourHourTime = (paramTime) =>{ 
+      var t = new Date("1/1/2022 " + paramTime); 
+      return t.getHours() + ':' + ('0'+t.getMinutes()).slice(-2); 
+    } 
 
     const statusReserv = [
       'Booked',
@@ -94,6 +107,12 @@ const Sidebar = () => {
       }
     }
 
+    const handleTableFlow = (reservation) => {
+      if (reservation.dates === `${date.day + " " + date.month.shortName + " " + date.year}`) {
+        setTableFlow(reservation)
+      }
+    }
+ 
     useEffect(() => {
       setNumberUpcomming(0)
       setNumberSeated(0)
@@ -170,16 +189,19 @@ const Sidebar = () => {
       reservations.forEach((reservation, index) => {
         let count = 0
         reservations.forEach((reserv, idx) => {
-          if(reservation.table === reserv.table) {
+          if(reservation.table === reserv.table && addMinutes(getTwentyFourHourTime(reservation.timeReservation),60) > getTwentyFourHourTime(reserv.timeReservation) && getTwentyFourHourTime(reservation.timeReservation) < getTwentyFourHourTime(reserv.timeReservation)) {
             count++
           }
         })
-        if(count !== 1) {
+        if(count !== 0) {
           if(!tableClashed.includes(reservation.table)) {
             setTableClashed((prevTable) => [...prevTable, reservation.table])
           }
         }
       })
+      if(tableFlow === null) {
+        setShowEdit(!showEdit)
+      }
     }, [reservations, reset])
 
 
@@ -261,7 +283,7 @@ const Sidebar = () => {
               return (
                 <div key={index}>
                 <div className="container-reservation" key={index} onClick={() => handleShowReserv(index)} 
-                style={{background: tableClashed.includes(reservation.table) ? "#FFEEEB" : null}}>
+                style={{background: tableClashed.includes(reservation.table) || reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "#FFEEEB" : null}}>
                   <span className="first-name">{reservation.customerReservation.firstName} </span>
                   <span className="last-name">{reservation.customerReservation.lastName}</span>
                   <span className="time-booking" style={{color: tableClashed.includes(reservation.table) ? "#DF4759" : null}}>
@@ -316,7 +338,7 @@ const Sidebar = () => {
                       {reservation.request || reservation.occasion[0] ? 
                         <box-icon name='purchase-tag' color='#506690' size="sm"></box-icon> 
                       : null}
-                      <p>
+                      <p style={{display: "flex"}}>
                       {reservation.occasion ?
                       <>
                         {
@@ -338,7 +360,7 @@ const Sidebar = () => {
                     <div className="reservation-req">
                     <div className="req-title">
                       <box-icon name='purchase-tag' color='#506690' ></box-icon>
-                      <p>
+                      <p style={{display: "flex"}}>
                       {reservation.occasion[0] ?
                       <>
                         {
@@ -380,7 +402,10 @@ const Sidebar = () => {
                         <p>Seated</p>
                       </div>
                       <div className="control-reservation" 
-                      onClick={() => (handleShowEdit(index), setTableFlow(reservation))}
+                      onClick={() => (
+                        handleShowEdit(index),
+                        handleTableFlow(reservation)
+                      )}
                       style={{width: reservation.statusReservation === "Seated" ||
                                      reservation.statusReservation === "Cancelled" ||
                                      reservation.statusReservation === "Completed" ||

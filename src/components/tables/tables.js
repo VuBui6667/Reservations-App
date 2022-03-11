@@ -3,6 +3,8 @@ import Table from '../table/table'
 import reservationAPI from '../../api/reservationAPI'
 import { ResetContext, TimeReserv } from "../../App"
 import { DatesReserv, TableClashed, TableFlow } from "../../App"
+import { DateObject } from "react-multi-date-picker";
+import { tab } from "@testing-library/user-event/dist/tab"
 
 
 
@@ -15,6 +17,7 @@ const Tables = () => {
     const [idxSelect, setIdxSelect] = useState([])
     const {tableClashed} = useContext(TableClashed)
     const {tableFlow} = useContext(TableFlow)
+    const date = new DateObject()
 
     const numberTables = [
         "105",
@@ -72,11 +75,15 @@ const Tables = () => {
             const containerChair = containerTable[tableIdx].getElementsByClassName("chair")
             if(containerTable[tableIdx].style.background==="rgb(255, 255, 255)" || tableFlow.table === numberTable) {
                 if(containerChair.length < (tableFlow.adultsReservation + tableFlow.childrenReservation)) {
+                    if(tableFlow.table !== numberTable) {
                         setIdxSelect((prevIdx) => [...prevIdx, tableIdx])
+                    }
                     for(let i=0; i<containerChair.length; i++) {
                         containerChair[i].style.background="rgba(223, 71, 89, 0.7)"
                     }
-                    containerTable[tableIdx].style.color="rgba(223, 71, 89, 0.5)"
+                    if(tableFlow.table !== numberTable) {
+                        containerTable[tableIdx].style.color="rgba(223, 71, 89, 1)"
+                    }
                 }
             }
         })
@@ -92,7 +99,9 @@ const Tables = () => {
                 } 
                 else {
                     containerTable[tableIdx].style.boxShadow=null
-                    containerTable[tableIdx].style.color=null
+                    if(containerTable[tableIdx].style.color !== "rgb(255, 255, 255)") {
+                        containerTable[tableIdx].style.color="#869AB8"
+                    }
                     if(idxSelect.includes(tableIdx)) {
                         for(let i=0; i<containerChair.length; i++) {
                             containerChair[i].style.background=null
@@ -122,16 +131,55 @@ const Tables = () => {
                                 containerTable[tableIdx].style.backgroundImage=`linear-gradient(to top,#a9eaff 16.666%, #d4f4ff 16.666%, #d4f4ff)`
                             }
                     }
-                    for(let i=0; i<numberPeople; i++) {
-                        containerChair[i].style.background="#007296"
+                    if(containerChair.length < numberPeople) {
+                        for(let i=0; i<containerChair.length; i++) {
+                            containerChair[i].style.background="red"
+                        }
+                    } 
+                    else {
+                        for(let i=0; i<numberPeople; i++) {
+                            containerChair[i].style.background="#007296"
+                        }
                     }
+
+                    if (reset === true) {
+                        for(let i=0; i<containerChair.length; i++) {
+                            containerChair[i].style.background="#747281"
+                        }
+                        setReset(!reset)
+                        if(containerChair.length < numberPeople) {
+                            for(let i=0; i<containerChair.length; i++) {
+                                containerChair[i].style.background="red"
+                            }
+                        }
+                         else {
+                            for(let i=0; i<numberPeople; i++) {
+                                containerChair[i].style.background="#007296"
+                            }
+                        }
+                    }
+                } 
+                if(reset === true) {
+                    setReset(false)
                 }
                 if(containerTable[tableIdx].outerText[4] === undefined && containerTable[tableIdx].style.background !== "rgb(255, 255, 255)") {
-                    setReset(!reset)
+                    setReset(false)
                     containerTable[tableIdx].style.background = "#fff"
                     for(let i=0; i<containerChair.length; i++) {
                         containerChair[i].style.background="#747281"
                     }
+                }
+                if(reservation.statusReservation === "Booked" && containerTable[tableIdx].style.background === "rgb(223, 71, 89)" && tableClashed.includes(!numberTable)) {
+                    containerTable[tableIdx].style.background = "#fff"
+                    for(let i=0; i<containerChair.length; i++) {
+                        containerChair[i].style.background="#747281"
+                    }
+                }
+                if(reservation.statusReservation === "Booked" && containerTable[tableIdx].style.color === "rgb(255,255,255)") {
+                    containerTable[tableIdx].style.color="#869AB8"
+                }
+                if(datesReserv !== date.day + " " + date.month.shortName + " " + date.year) {
+                    containerTable[tableIdx].style.color="#869AB8"
                 }
             })
         })

@@ -1,17 +1,19 @@
 import React from 'react'
 import { useEffect, useState, useContext } from 'react'
 import reservationAPI from '../../api/reservationAPI'
-import { ResetContext, TimeReserv } from '../../App'
+import { DatesReserv, ResetContext, TimeReserv } from '../../App'
+// import { DateObject } from "react-multi-date-picker";
 
 export default function TimeSystem() {
     const {time, setTime} = useContext(TimeReserv)
     const [reservations, setReservations] = useState([])
     const {reset, setReset} = useContext(ResetContext)
+    // const date = new DateObject()
 
     useEffect(() => {
       const fetchReservations = async () =>  {
         try {
-          const response = await reservationAPI.getAll()
+          const response = await reservationAPI.get(DatesReserv)
           setReservations(response)
         } catch(error) {
           console.log(error)
@@ -25,7 +27,7 @@ export default function TimeSystem() {
         setInterval(() => {
             let today = new Date()
             let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
-            setTime("12:40")        
+            setTime("12:20")        
           })
     }, 5000)
 

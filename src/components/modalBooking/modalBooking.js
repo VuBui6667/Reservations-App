@@ -94,27 +94,28 @@ const ModalBooking = (props) => {
 
     ]
     const tables = [
-        {value: '1', label: '105', id:'table'},
-        {value: '2', label: '106', id:'table'},
-        {value: '3', label: '107', id:'table'},
-        {value: '4', label: '108', id:'table'},
-        {value: '5', label: '109', id:'table'},
-        {value: '6', label: '110', id:'table'},
-        {value: '7', label: '111', id:'table'},
-        {value: '8', label: '112', id:'table'},
-        {value: '9', label: '113', id:'table'},
-        {value: '10', label: '114', id:'table'},
-        {value: '11', label: '115', id:'table'},
-        {value: '12', label: '116', id:'table'},
-        {value: '13', label: '117', id:'table'},
-        {value: '14', label: '118', id:'table'},
-        {value: '15', label: '120', id:'table'},
-        {value: '16', label: '121', id:'table'},
-        {value: '17', label: '122', id:'table'},
-        {value: '18', label: '123', id:'table'},
+        {value: 1, label: '105', id:'table'},
+        {value: 2, label: '106', id:'table'},
+        {value: 3, label: '107', id:'table'},
+        {value: 4, label: '108', id:'table'},
+        {value: 5, label: '109', id:'table'},
+        {value: 6, label: '110', id:'table'},
+        {value: 7, label: '111', id:'table'},
+        {value: 8, label: '112', id:'table'},
+        {value: 9, label: '113', id:'table'},
+        {value: 10, label: '114', id:'table'},
+        {value: 11, label: '115', id:'table'},
+        {value: 12, label: '116', id:'table'},
+        {value: 13, label: '117', id:'table'},
+        {value: 14, label: '118', id:'table'},
+        {value: 15, label: '120', id:'table'},
+        {value: 16, label: '121', id:'table'},
+        {value: 17, label: '122', id:'table'},
+        {value: 18, label: '123', id:'table'},
     ]
 
     const chairs = [
+        '0',
         '6',
         '4',
         '14',
@@ -177,12 +178,14 @@ const ModalBooking = (props) => {
         const newReservation={...reservation}
         newReservation[options.id] = options.label
         setReservation(newReservation)
-        if(options.id === "table") {
-            console.log(options.value);
-            const newReservation={...reservation}
-            newReservation["numberChairs"] = chairs[options.value+1]
-            setReservation(newReservation)
-        }
+    }
+
+    const handleChairs = (options) => {
+        const newReservation={...reservation}
+        newReservation["numberChairs"] = chairs[options.value]
+        setReservation(newReservation)
+        newReservation["table"] = options.label
+        setReservation(newReservation)
     }
 
     const handleDate = (value) => {
@@ -446,7 +449,7 @@ const ModalBooking = (props) => {
                             <div className="reservation-table">
                                 <div className="table-title">Table</div>
                                 <Select     
-                                    onChange={handleSelect}
+                                    onChange={handleChairs}
                                     options={tables} 
                                     placeholder={"Select Table"}
                                     className="type-service"

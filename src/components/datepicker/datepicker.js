@@ -6,7 +6,7 @@ import opacity from "react-element-popper/animations/opacity"
 import './datepicker.css'
 import DatePickerHeader from "react-multi-date-picker/plugins/date_picker_header"
 import { useContext } from 'react'
-import { DatesReserv } from "../../App"
+import { DatesReserv, TableFlow, ResetContext, Skeleton } from "../../App"
 
 //It is better to put this array outside the main component.
 // const months = [
@@ -35,10 +35,13 @@ import { DatesReserv } from "../../App"
 
 export default function Datepicker() {
   const {setDatesReserv} = useContext(DatesReserv)
+  const {setTableFlow} = useContext(TableFlow)
+  const {setReset} = useContext(ResetContext)
+  const {setSkeleton} = useContext(Skeleton)
   const [value, setValue] = useState({ 
     value: new Date(),
     format: "dddd, D MMM YYYY",
-    onChange: (date) => setDatesReserv(date.day + " " + date.month.shortName + " " + date.year),
+    onChange: (date) => (setDatesReserv(date.day + " " + date.month.shortName + " " + date.year), setReset(true), setSkeleton(true), setTableFlow(null)),
   });
   return (
     <div className="date-picker">

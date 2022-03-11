@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import './pages.scss'
 import Tables from '../components/tables/tables'
 import StatusTable from '../components/statusTable/statusTable'
@@ -6,7 +6,9 @@ import ModalBooking from '../components/modalBooking/modalBooking'
 import '../components/zoom/zoom.scss'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";  
 // import notifyEditAPI from '../api/notifyEditAPI';
-import { NotifyContext, ReservNotify, TimeReserv } from '../App'
+import { NotifyContext, ReservNotify, Skeleton, TimeReserv } from '../App'
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 function Home() {
   const [showModal, setShowModal] = useState(false)
@@ -15,14 +17,29 @@ function Home() {
   const {reservEdit} = useContext(ReservNotify)
   const {time} = useContext(TimeReserv)
 
+  const {skeleton, setSkeleton} = useContext(Skeleton)
+
   setTimeout(
     function() {
         setNotify(false)
     },4000
   )
+  useEffect(() => {
+    const timeoutID = window.setTimeout(() => {
+      setSkeleton(false)
+    }, 1500);
+
+    return () => window.clearTimeout(timeoutID );
+  }, [skeleton])
 
   return (
     <div className="main-container">
+      {skeleton ? 
+        <Box sx={{ position: "absolute", right: "580px", bottom: "400px" }}>
+          <CircularProgress />
+        </Box> 
+      : null}
+      <div style={{opacity: skeleton ? 0 : 1}}>
       <div className="notify-update-reserv" 
       style={{height: notify ? "44px" : "0", opacity: notify ? 1 : 0
               }}>
@@ -59,6 +76,7 @@ function Home() {
       {time > "09:00" ?
         <div className="add-new" onClick={() => setShowModal(!showModal)}>{showModal ? <box-icon name='x' size="md" color="white" style={{marginTop: "10px"}}></box-icon> : "+"}</div>
       : <div className="add-new" style={{opacity: "0.5"}}>+</div>}
+      </div>
       </div>
   )
 }
