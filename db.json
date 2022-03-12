@@ -106,7 +106,7 @@
         "email": "KenChow151@gmail.com",
         "tag": ""
       },
-      "statusReservation": "No Show",
+      "statusReservation": "Late",
       "occasion": [
         "Anniversary",
         "Couple Date",
@@ -132,7 +132,7 @@
         "email": "TommyTan251@gmail.com",
         "tag": ""
       },
-      "statusReservation": "Completed",
+      "statusReservation": "Late",
       "occasion": [],
       "id": 3
     },
@@ -982,7 +982,7 @@
         "email": "SavannahNguyen@gmail.com",
         "tag": ""
       },
-      "statusReservation": "Confirmed",
+      "statusReservation": "Seated",
       "occasion": [
         "Birthday"
       ],
@@ -992,7 +992,7 @@
       "adultsReservation": 2,
       "childrenReservation": 1,
       "timeReservation": "12:45 PM",
-      "table": "106",
+      "table": "107",
       "numberChairs": "4",
       "request": "",
       "note": "",
@@ -1006,7 +1006,7 @@
         "email": "TannyTan0102@gmail.com",
         "tag": ""
       },
-      "statusReservation": "Confirmed",
+      "statusReservation": "No Show",
       "occasion": "",
       "id": 42
     },
@@ -1050,7 +1050,7 @@
         "email": "MichaelNg235@gmail.com",
         "tag": ""
       },
-      "statusReservation": "Confirmed",
+      "statusReservation": "Seated",
       "occasion": "",
       "id": 44
     },
@@ -1142,7 +1142,7 @@
         "email": "KenChow151@gmail.com",
         "tag": ""
       },
-      "statusReservation": "Booked",
+      "statusReservation": "Confirmed",
       "occasion": "",
       "id": 48
     }

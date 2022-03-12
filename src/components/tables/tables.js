@@ -2,9 +2,8 @@ import React, {useEffect, useState, useContext} from "react"
 import Table from '../table/table'
 import reservationAPI from '../../api/reservationAPI'
 import { ResetContext, TimeReserv } from "../../App"
-import { DatesReserv, TableClashed, TableFlow } from "../../App"
+import { DatesReserv, TableClashed, TableFlow, Skeleton } from "../../App"
 import { DateObject } from "react-multi-date-picker";
-import { tab } from "@testing-library/user-event/dist/tab"
 
 
 
@@ -16,7 +15,8 @@ const Tables = () => {
     const {datesReserv} = useContext(DatesReserv)
     const [idxSelect, setIdxSelect] = useState([])
     const {tableClashed} = useContext(TableClashed)
-    const {tableFlow} = useContext(TableFlow)
+    const {tableFlow, setTableFlow} = useContext(TableFlow)
+    const {skeleton} = useContext(Skeleton)
     const date = new DateObject()
 
     const numberTables = [
@@ -159,10 +159,7 @@ const Tables = () => {
                         }
                     }
                 } 
-                if(reset === true) {
-                    setReset(false)
-                }
-                if(containerTable[tableIdx].outerText[4] === undefined && containerTable[tableIdx].style.background !== "rgb(255, 255, 255)") {
+                if(containerTable[tableIdx].outerText[4] !== "1" && containerTable[tableIdx].style.background !== "rgb(255, 255, 255)") {
                     setReset(false)
                     containerTable[tableIdx].style.background = "#fff"
                     for(let i=0; i<containerChair.length; i++) {

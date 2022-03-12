@@ -36,12 +36,12 @@ import { DatesReserv, TableFlow, ResetContext, Skeleton } from "../../App"
 export default function Datepicker() {
   const {setDatesReserv} = useContext(DatesReserv)
   const {setTableFlow} = useContext(TableFlow)
-  const {setReset} = useContext(ResetContext)
+  const {reset, setReset} = useContext(ResetContext)
   const {setSkeleton} = useContext(Skeleton)
   const [value, setValue] = useState({ 
     value: new Date(),
     format: "dddd, D MMM YYYY",
-    onChange: (date) => (setDatesReserv(date.day + " " + date.month.shortName + " " + date.year), setReset(true), setSkeleton(true), setTableFlow(null)),
+    onChange: (date) => (setDatesReserv(date.day + " " + date.month.shortName + " " + date.year), setReset(!reset), setSkeleton(true)),
   });
   return (
     <div className="date-picker">

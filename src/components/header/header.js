@@ -14,7 +14,14 @@ const Header = () => {
         { value: 'lunch', label: 'Lunch Service'},
         { value: 'dinner', label: 'Dinner Service'}
     ]
-    const {time} = useContext(TimeReserv)
+
+    const addMinutes = (paramTime, minute) => {
+        var t1 = new Date("1/1/2022 " + paramTime);
+        var t2 = new Date(t1.getTime() + minute*60000)
+        return t2.getHours() + ':' + ('0'+t2.getMinutes()).slice(-2); 
+    }
+
+    const {time, setTime} = useContext(TimeReserv)
     return (
         <div className="header" style={show ? { display:'none'} : {}}>
             <div className="header-icon">
