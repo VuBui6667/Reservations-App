@@ -97,9 +97,39 @@ const EditReserv = (props) => {
         {value: '18', label: '123', id:'table'},
     ]
 
+    const chairs = [
+        '0',
+        '6',
+        '4',
+        '14',
+        '14',
+        '8',
+        '8',
+        '6',
+        '6',
+        '8',
+        '6',
+        '6',
+        '2',
+        '2',
+        '2',
+        '2',
+        '4',
+        '12',
+        '12',
+    ]
+
     const handleSelect = (options) => {
         const newReservation={...reservation}
         newReservation[options.id] = options.label
+        setReservartion(newReservation)
+    }
+
+    const handleChairs = (options) => {
+        const newReservation={...reservation}
+        newReservation["numberChairs"] = chairs[options.value]
+        setReservartion(newReservation)
+        newReservation["table"] = options.label
         setReservartion(newReservation)
     }
 
@@ -144,12 +174,12 @@ const EditReserv = (props) => {
                 <div className="navigate-edit-reserv">
                     <div className="back-reserv" onClick={() => (setToggleEdit(!toggleEdit), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
                     {
-                    tableClashed.includes(reserv.table) ?
+                    tableClashed.includes(reservation.table) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
-                    reserv.numberChairs < reserv.adultsReservation + reserv.childrenReservation ?
+                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
@@ -275,7 +305,7 @@ const EditReserv = (props) => {
                                 option: (provided, state) => ({
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
-                                color: `${tableClashed.includes(reserv.table) && state.data.label === reserv.timeReservation ? "red" : "#506690"}`,
+                                color: `${tableClashed.includes(reservation.table) && state.data.label === reserv.timeReservation ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
                                 container: (provided) => ({
@@ -285,11 +315,11 @@ const EditReserv = (props) => {
                                 }),
                                 placeholder: (provided) => ({
                                     ...provided,
-                                    color: `${tableClashed.includes(reserv.table) ? "red" : "#506690"}`,
+                                    color: `${tableClashed.includes(reservation.table) ? "red" : "#506690"}`,
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${tableClashed.includes(reserv.table) && state.data.label === reserv.timeReservation ? "red" : "#506690"}`,
+                                    color: `${tableClashed.includes(reservation.table) && state.data.label === reserv.timeReservation ? "red" : "#506690"}`,
                                 })
                             }}
                         />
@@ -318,7 +348,7 @@ const EditReserv = (props) => {
                                 option: (provided, state) => ({
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
-                                color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) && state.data.label === reserv.adultsReservation ? "red" : "#506690"}`,
+                                color: `${state.value > reservation.numberChairs - reservation.childrenReservation ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
                                 container: (provided) => ({
@@ -328,11 +358,11 @@ const EditReserv = (props) => {
                                 }),
                                 placeholder: (provided) => ({
                                     ...provided,
-                                    color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) ? "red" : "#506690"}`,
+                                    color: `${reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "red" : "#506690"}`,
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) && state.data.label === reserv.adultsReservation ? "red" : "#506690"}`,
+                                    color: `${reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) && state.data.label === reservation.adultsReservation ? "red" : "#506690"}`,
                                 })
                             }}
                         />
@@ -360,7 +390,7 @@ const EditReserv = (props) => {
                                 option: (provided, state) => ({
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
-                                color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) && state.data.label === reserv.childrenReservation ? "red" : "#506690"}`,
+                                color: `${state.value > reservation.numberChairs - reservation.adultsReservation ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
                                 container: (provided) => ({
@@ -370,11 +400,11 @@ const EditReserv = (props) => {
                                 }),
                                 placeholder: (provided) => ({
                                     ...provided,
-                                    color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) ? "red" : "#506690"}`,
+                                    color: `${reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "red" : "#506690"}`,
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) && state.data.label === reserv.childrenReservation ? "red" : "#506690"}`,
+                                    color: `${reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) && state.data.label === reservation.childrenReservation ? "red" : "#506690"}`,
                                 })
                             }}
                         />
@@ -390,7 +420,7 @@ const EditReserv = (props) => {
                         :
                         <Select     
                                 // value={reservation.adultsReservation}
-                            onChange={handleSelect}
+                            onChange={handleChairs}
                             options={tablesReserv} 
                             placeholder={reserv.table}
                             className="select-edit-reserv"
@@ -402,7 +432,9 @@ const EditReserv = (props) => {
                                 option: (provided, state) => ({
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
-                                color: `${(tableClashed.includes(reserv.table) || reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation)) && state.data.label === reserv.table ? "red" : "#506690"}`,
+                                color: `${tableClashed.includes(state.data.label) || 
+                                        chairs[state.value] < reservation.adultsReservation + reservation.childrenReservation
+                                        ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
                                 container: (provided) => ({
@@ -412,19 +444,23 @@ const EditReserv = (props) => {
                                 }),
                                 placeholder: (provided) => ({
                                     ...provided,
-                                    color: `${(tableClashed.includes(reserv.table) || reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation)) ? "red" : "#506690"}`,
+                                    color: `${(tableClashed.includes(reservation.table) || 
+                                            reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation)) ? 
+                                            "red" : "#506690"}`,
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${(tableClashed.includes(reserv.table) || reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation)) && state.data.label === reserv.table ? "red" : "#506690"}`,
+                                    color: `${(tableClashed.includes(reservation.table) || 
+                                            reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation)) &&
+                                            state.data.label === reservation.table ? "red" : "#506690"}`,
                                 })
                             }}
                         />}
                     </div>
-                    <div className="warn-field" style={{display: tableClashed.includes(reserv.table) ? "flex" : "none"}}>
+                    <div className="warn-field" style={{display: tableClashed.includes(reservation.table) ? "flex" : "none"}}>
                         <box-icon name='error-circle' color="#DF4759" style={{marginRight: "5px"}}></box-icon>
                         Clashes with an ongoing reservation.</div>
-                    <div className="warn-field" style={{display: reserv.numberChairs < (reserv.adultsReservation + reservation.childrenReservation) ? "flex" : "none"}}>
+                    <div className="warn-field" style={{display: reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "flex" : "none"}}>
                         <box-icon name='error-circle' color="#DF4759" style={{marginRight: "5px"}}></box-icon>
                         Total pax exceeds table's capacity.
                     </div>

@@ -81,4 +81,5 @@ export default App;
 
 // json-server.cmd --watch db.json --port 4000
 // npm start
+// react-scripts start
 
