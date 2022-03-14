@@ -1259,8 +1259,8 @@
       "id": 53
     },
     {
-      "adultsReservation": 1,
-      "childrenReservation": 2,
+      "adultsReservation": 4,
+      "childrenReservation": 0,
       "timeReservation": "12:45 PM",
       "table": "105",
       "numberChairs": "6",

@@ -215,7 +215,7 @@ const Sidebar = () => {
                 {numberBooking} Bookings</p>
                 <p className="info-item">
                   <box-icon name='group' color='white'></box-icon>
-                {numberCover}Covers</p>
+                {numberCover} Covers</p>
             </div>
             <input className="search-info" placeholder='Search by name or table number' 
                   value={search} onChange={e => setSearch(e.target.value)}>  

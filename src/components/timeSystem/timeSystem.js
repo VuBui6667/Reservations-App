@@ -29,7 +29,7 @@ export default function TimeSystem() {
         setInterval(() => {
             let today = new Date()
             let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
-            setTime("12:30")        
+            setTime(timeToday)        
           })
     }, 5000)
 

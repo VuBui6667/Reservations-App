@@ -6,6 +6,7 @@ import reservationAPI from '../../api/reservationAPI'
 import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, WarnContext } from "../../App"
 import {MdOutlineChair} from "react-icons/md"
 import warningSign from '../../image/warning-sign.png'
+import { DateObject } from "react-multi-date-picker";
 
 const EditReserv = (props) => {
     const reserv = props.editReserv
@@ -17,6 +18,7 @@ const EditReserv = (props) => {
     const [dateValue, setDateValue] = useState(false)
     const datePickerRef = useRef()
     const {tableClashed} = useContext(TableClashed)
+    const date = new DateObject()
 
     const [reservation, setReservartion] = useState(reserv)
     const [occasionSelect, setOccasionSelect] = useState(reserv.occasion)
@@ -279,6 +281,7 @@ const EditReserv = (props) => {
                             onChange={(value) => {
                                 setDateValue(value)
                             }}
+                            minDate={new Date().setDate(date.day)}
                         />
                         </div>
                         }

@@ -260,7 +260,7 @@ const ModalBooking = (props) => {
                     <div className="reservation-details">
                         <div className="containers-title">RESERVATION DETAILS</div>
                         <div className="reservation-date">
-                            <span>Date</span>
+                            <span class="reservation-date-title">Date</span>
                             {
                                 weekdaysShort.map((weekday, idx) => {
                                     if(weekday === date.weekDay.shortName) {
@@ -349,7 +349,8 @@ const ModalBooking = (props) => {
                                 <p>{dateValue ? dateValue.weekDay.shortName : null}</p>
                                 <p>{dateValue ? dateValue.day : null}</p>
                                 <p>{dateValue ? dateValue.month.shortName : null}</p>
-                              <DatePicker 
+                                <DatePicker 
+                                    minDate={new Date().setDate(date.day)}
                                     animations={[
                                      opacity(), 
                                      transition({ from: 35, duration: 800 })
