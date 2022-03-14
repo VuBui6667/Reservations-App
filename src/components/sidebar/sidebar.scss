@@ -24,10 +24,9 @@ a {
 }
 
 #sidebar {
-    overflow-y: scroll;
+    overflow-x: hidden;
     position: fixed;
-    width: 25vw;    
-    min-width: 320px;
+    max-width: 25%;    
     background-color: #fff;
     height: calc(100vh - 54px) !important;
     // border: 1px solid #0028641F;

@@ -53,6 +53,7 @@ const EditReserv = (props) => {
     ]
 
     const adultsReserv = [
+        { value: '0', label: 0, id:'adultsReservation'},
         { value: '1', label: 1, id:'adultsReservation'},
         { value: '2', label: 2, id:'adultsReservation'},
         { value: '3', label: 3, id:'adultsReservation'},
@@ -65,6 +66,7 @@ const EditReserv = (props) => {
         
     ]
     const childrenReserv = [
+        { value: '0', label: 0, id:'childrenReservation'},
         { value: '1', label: 1, id:'childrenReservation'},
         { value: '2', label: 2, id:'childrenReservation'},
         { value: '3', label: 3, id:'childrenReservation'},
