@@ -1635,6 +1635,30 @@
       "statusReservation": "Confirmed",
       "occasion": "",
       "id": 70
+    },
+    {
+      "adultsReservation": 1,
+      "childrenReservation": 3,
+      "timeReservation": "1:00 PM",
+      "table": "108",
+      "numberChairs": "14",
+      "request": "",
+      "note": "",
+      "dates": "21 Mar 2022",
+      "customerReservation": {
+        "id": 5,
+        "firstName": "Michael",
+        "lastName": "Nguyen",
+        "contact": "9123 14156",
+        "birthday": "23/5/1999",
+        "email": "MichaelNg235@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": [
+        "Anniversary"
+      ],
+      "id": 71
     }
   ]
 }

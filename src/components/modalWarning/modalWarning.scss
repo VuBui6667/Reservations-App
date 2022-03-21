@@ -1,3 +1,15 @@
+@mixin mobile {
+    @media only screen and (max-width: 600px) {
+        @content;
+    }
+  }
+  
+  @mixin tablet {
+    @media only screen and (max-width: 1024px) {
+        @content;
+    }
+  }
+
 .modal-warning {
     .layout-modal {
         position: absolute;
@@ -27,6 +39,10 @@
         color: #1B2A4E;
         border-radius: 4px;
         box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        @include mobile {
+            width: 80vw;
+            height: 400px;
+        }
         .title-cancel {
             font-weight: 700;
             font-size: 28px;
@@ -40,11 +56,18 @@
                 font-weight: 700;
                 color: #1B2A4E;
             }
+            @include mobile {
+                text-align: center;
+            }
         }
         .control-cancel {
             display: flex;
             flex-direction: row;
             margin-top: 25px;
+            @include mobile {
+                flex-direction: column;
+                align-items: center;
+            }
             .deny-cancel {
                 width: 240px;
                 height: 45px;
@@ -58,6 +81,9 @@
                 font-weight: 600;
                 font-size: 18px;
                 transition: 0.5s;
+                @include mobile {
+                    margin: 10px 5px;
+                }
             }
             .deny-cancel:hover {
                 cursor: pointer;
@@ -77,6 +103,9 @@
                 font-weight: 600;
                 font-size: 18px;
                 transition: 0.5s;
+                @include mobile {
+                    margin: 10px 5px;
+                }
             }
             .accept-cancel:hover {
                 cursor: pointer;

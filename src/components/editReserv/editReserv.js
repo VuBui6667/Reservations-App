@@ -1,4 +1,4 @@
-import React, {useState, useRef, useContext} from 'react'
+import React, {useState, useRef, useContext, useEffect} from 'react'
 import DatePicker from 'react-multi-date-picker'
 import './editReserv.scss'
 import Select from 'react-select'
@@ -46,7 +46,6 @@ const EditReserv = (props) => {
     const statusReserv = [
         {value: 1, label: "Booked"},
         {value: 2, label: "Confirmed"},
-        {value: 3, label: "Late"}
     ]
 
     const timeReserv = [
@@ -155,10 +154,13 @@ const EditReserv = (props) => {
           } else {
             setOccasionSelect((currentArray) => currentArray.filter((remainElement) => remainElement !== occasion))
           }
+    }
+
+    useEffect(() => {
         const newReservation={...reservation}
         newReservation["occasion"] = occasionSelect
         setReservartion(newReservation)
-    }
+    }, [occasionSelect])
 
     const saveReserv = async() => {
         try {
@@ -516,7 +518,7 @@ const EditReserv = (props) => {
                         :
                         <input type="text" 
                             value={reservation.request || "None"}
-                            id="request-field"
+                            id="request"
                             onChange={(e) => handleChange(e)}
                             placeholder="If any"/>
                         }
@@ -529,7 +531,7 @@ const EditReserv = (props) => {
                         </div>
                         <input type="text"
                             value={reservation.note}
-                            id="note-field"
+                            id="note"
                             onChange={(e) => handleChange(e)}
                             placeholder="If any"/>
                     </div>

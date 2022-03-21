@@ -209,15 +209,16 @@ const ModalBooking = (props) => {
 
     const handleOccasion = (index) => {
         if (occasionSelect.includes(occasions[index]) === false) {
-            setOccasionSelect([...occasionSelect, occasions[index]])
+            setOccasionSelect(occasionSelect => [...occasionSelect, occasions[index]])
           } else {
             setOccasionSelect((currentArray) => currentArray.filter((remainElement) => remainElement !== occasions[index]))
           }
+    }
+    useEffect(() => {
         const newReservation={...reservation}
         newReservation["occasion"] = occasionSelect
-        // console.log(occasionSelect);
         setReservation(newReservation)
-    }
+    }, [occasionSelect])
 
     const handleTypeNotify = (number) => {
         if (type.includes(number) === false) {
