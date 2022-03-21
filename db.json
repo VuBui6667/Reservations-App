@@ -1659,6 +1659,30 @@
         "Anniversary"
       ],
       "id": 71
+    },
+    {
+      "adultsReservation": 1,
+      "childrenReservation": 1,
+      "timeReservation": "12:45 PM",
+      "table": "118",
+      "numberChairs": "2",
+      "request": "",
+      "note": "",
+      "dates": "21 Mar 2022",
+      "customerReservation": {
+        "id": 3,
+        "firstName": "Tommy",
+        "lastName": "Tan",
+        "contact": "9123 15141",
+        "birthday": "25/1/2000",
+        "email": "TommyTan251@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": [
+        "Couple Date"
+      ],
+      "id": 72
     }
   ]
 }
