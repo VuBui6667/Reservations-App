@@ -1,9 +1,8 @@
-import React, {useEffect, useState, useContext} from 'react'
+import React, {useContext} from 'react'
 // import Draggable from 'react-draggable'
 import './table.scss'
-import reservationAPI from '../../api/reservationAPI'
 import { ResetContext } from "../../App"
-import { DatesReserv, TableClashed } from '../../App'
+import { DatesReserv, TableClashed, ReservationsContext } from '../../App'
 
 const Chair = (props) => {
     return (
@@ -13,10 +12,6 @@ const Chair = (props) => {
 
 const Table = (props) => {
     const styleTable = {
-        top: props.top + "%",
-        right: props.right + "%",
-        height: props.height + "px",
-        width: props.width + "px",
         borderRadius: props.borderRadius
     }
     const styleChairs = {
@@ -25,23 +20,9 @@ const Table = (props) => {
 
     const numberChair = props.numChair
 
-    const [reservations, setReservations] = useState(null)
+    const {reservations} = useContext(ReservationsContext)
     // const [containerTable, setContainerTable] = useState(null)
-    const {reset} = useContext(ResetContext)
-    const {datesReserv} = useContext(DatesReserv)
     const {tableClashed} = useContext(TableClashed)
-
-    useEffect(() => {
-        const fetchReservations = async () =>  {
-        try {
-            const response = await reservationAPI.get(datesReserv)
-            setReservations(response)
-        } catch(error) {
-            console.log(error)
-        }
-        }
-        fetchReservations()
-    },[reset, datesReserv])
 
     if(!reservations) {
         return <div></div>

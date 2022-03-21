@@ -1,3 +1,10 @@
+@mixin mobile {
+    @media only screen and (max-width: 600px) {
+        @content;
+    }
+}
+
+
 .zoom {
     width: 50px;
     height: 150px;
@@ -9,8 +16,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 99;
+    z-index: 10;
     border-radius: 4px;
+    @include mobile {
+        right: 10px;
+    }
 }
 
 .zoom-item {
@@ -19,6 +29,9 @@
         cursor: pointer;
         opacity: 0.8;
     }
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .setting-tables {

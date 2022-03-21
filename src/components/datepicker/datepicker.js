@@ -3,7 +3,7 @@ import React, {useState} from 'react'
 import 'boxicons'
 import transition from "react-element-popper/animations/transition"
 import opacity from "react-element-popper/animations/opacity"
-import './datepicker.css'
+import './datepicker.scss'
 import DatePickerHeader from "react-multi-date-picker/plugins/date_picker_header"
 import { useContext } from 'react'
 import { DatesReserv, TableFlow, ResetContext, Skeleton } from "../../App"
@@ -41,7 +41,7 @@ export default function Datepicker() {
   const [value, setValue] = useState({ 
     value: new Date(),
     format: "dddd, D MMM YYYY",
-    onChange: (date) => (setDatesReserv(date.day + " " + date.month.shortName + " " + date.year), setReset(!reset), setSkeleton(true)),
+    onChange: (date) => (setDatesReserv(date.day + " " + date.month.shortName + " " + date.year), setReset(!reset), setSkeleton(true), setTableFlow(null)),
   });
   return (
     <div className="date-picker">
@@ -60,16 +60,6 @@ export default function Datepicker() {
         // months={months}
         // weekDays={weekDays}
         // format="dddd, DD MMMM YYYY"
-        style={{ 
-            width: "265px", 
-            height: "40px", 
-            textAlign: "start",
-            border: "1px solid rgba(0, 40, 100, 0.12)",
-            borderRadius: "3px",
-            fontSize: "15px",
-            lineHeight: "20px",
-            paddingLeft: "50px"
-        }}
         inputClass="input-date"
         />
         <div className="date-nextArrow"><box-icon name='chevron-right' ></box-icon></div>

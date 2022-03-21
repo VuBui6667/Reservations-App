@@ -15,13 +15,14 @@ const ModalBooking = (props) => {
     const [dateSelect, setDateSelect] = useState(0)
     const [dateValue, setDateValue] = useState(false)
     const [method, setMethod] = useState(3)
-    const [type, setType] = useState(0)
+    const [type, setType] = useState([])
     const date = new DateObject()
     const [customers, setCustomers] = useState([])
     const [occasionSelect, setOccasionSelect] = useState([])
     const setShowModal = props.setShowModal
     const showModal = props.showModal
     const {reset, setReset} = useContext(ResetContext)
+
  
     const [reservation, setReservation] = useState({
         adultsReservation: "",
@@ -218,6 +219,14 @@ const ModalBooking = (props) => {
         setReservation(newReservation)
     }
 
+    const handleTypeNotify = (number) => {
+        if (type.includes(number) === false) {
+            setType(prev => [...prev, number])
+          } else {
+            setType((currentArray) => currentArray.filter((remainElement) => remainElement !== number))
+          }
+    }
+
 
     // function handleCancel() {
     //     const newReservation={...reservation}
@@ -232,7 +241,7 @@ const ModalBooking = (props) => {
     // }
 
     return (
-        <div className={"modalBooking animate__animated " + props.styleName }>
+        <div className={`modalBooking animate__animated ${showModal ? "animate__fadeInUp" : "animate__fadeOutDown"}`} style={{zIndex: showModal ? null : 0}}>
             <div className="booking-header">
                 <div className="booking-title">Add New</div>
                 <div className="booking-close" onClick={() => props.setShowModal(!props.showModal)}>
@@ -260,12 +269,13 @@ const ModalBooking = (props) => {
                     <div className="reservation-details">
                         <div className="containers-title">RESERVATION DETAILS</div>
                         <div className="reservation-date">
-                            <span class="reservation-date-title">Date</span>
+                            <span className="reservation-date-title">Date</span>
+                            <div className="container-dates">
                             {
                                 weekdaysShort.map((weekday, idx) => {
                                     if(weekday === date.weekDay.shortName) {
                                         return (
-                                            <div style={{display: "flex"}} key={idx}>
+                                            <>
                                             <div className="reservation-date-item"
                                             onClick = {() => (setDateSelect(0), handleDate(date))}
                                             style={{
@@ -326,7 +336,7 @@ const ModalBooking = (props) => {
                                                 <p>{date.day+5}</p>
                                                 <p>{date.month.shortName}</p>
                                             </div>
-                                            </div>
+                                            </>
                                         )
                                     }
                                 })
@@ -365,6 +375,7 @@ const ModalBooking = (props) => {
                                         handleDate(value)
                                     }}
                                 />
+                            </div>
                             </div>
                         </div> 
                         <div className="reservation-numberPeople">
@@ -507,7 +518,7 @@ const ModalBooking = (props) => {
                             value={reservation.request}
                             id="request"
                             onChange={(e) => handleChange(e)}
-                             placeholder="Specify if any" className="request-input"/>
+                             placeholder="Specify if any"/>
                         </div>
                         <div className="reservation-notes">
                             <div className="notes-title">Reservation Notes by Staff</div>
@@ -515,7 +526,7 @@ const ModalBooking = (props) => {
                             value={reservation.note}
                             id="note"
                             onChange={(e) => handleChange(e)}
-                             placeholder="Specify if any" className="notes-input" />
+                             placeholder="Specify if any" />
                         </div>
                     </div>
                 </div>
@@ -563,14 +574,14 @@ const ModalBooking = (props) => {
                         </div>
                         <div className="types-notify">
                             <div className="title-notify">Type of Notification</div>
-                            <div className="type-notify" onClick={() => setType(1)}>
+                            <div className="type-notify" onClick={() => handleTypeNotify(1)}>
                                 <p className="type-notify-btn" 
-                                style={{backgroundColor: type===1 ? "#7C69EF" : null}}>
+                                style={{backgroundColor: type.includes(1) ? "#7C69EF" : null}}>
                                     <box-icon name='check' size="lg" color="#fff"></box-icon></p>
                                 Reservation Confirmation</div>
-                            <div className="type-notify" onClick={() => setType(2)}>
+                            <div className="type-notify" onClick={() => handleTypeNotify(2)}>
                                 <p className="type-notify-btn" 
-                                style={{backgroundColor: type===2 ? "#7C69EF" : null}}>
+                                style={{backgroundColor: type.includes(2) ? "#7C69EF" : null}}>
                                     <box-icon name='check' size="lg" color="#fff"></box-icon></p>
                                 Reservation Reminder</div>
                         </div> 

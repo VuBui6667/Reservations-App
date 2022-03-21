@@ -3,18 +3,18 @@ import DatePicker from 'react-multi-date-picker'
 import './editReserv.scss'
 import Select from 'react-select'
 import reservationAPI from '../../api/reservationAPI'
-import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, WarnContext } from "../../App"
+import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, WarnContext, ResetContext } from "../../App"
 import {MdOutlineChair} from "react-icons/md"
 import warningSign from '../../image/warning-sign.png'
 import { DateObject } from "react-multi-date-picker";
+// import { useSelector, useDispatch } from "react-redux";
+// import { reset } from "../../actions/reset" 
 
 const EditReserv = (props) => {
     const reserv = props.editReserv
     const toggleEdit = props.toggleEdit
     const setToggleEdit = props.setToggleEdit
     const idxReserv = props.idxReserv
-    const reset = props.reset
-    const setReset = props.setReset
     const [dateValue, setDateValue] = useState(false)
     const datePickerRef = useRef()
     const {tableClashed} = useContext(TableClashed)
@@ -28,6 +28,12 @@ const EditReserv = (props) => {
     const {cancelReserv, setCancelReserv} = useContext(CancelReserv)
     const {setTableFlow} = useContext(TableFlow)
     const {setWarning} = useContext(WarnContext)
+    const {reset, setReset} = useContext(ResetContext)
+
+
+    // const dispatch = useDispatch()
+    // const resetStatus = useSelector((state) => state.resetReducer.reset)
+
     const occasions = [
         'Casual',
         'Birthday',
@@ -157,7 +163,7 @@ const EditReserv = (props) => {
     const saveReserv = async() => {
         try {
         await reservationAPI.patch(idxReserv, reservation)
-        setReset(true)
+        setReset(!reset)
         setToggleEdit(!toggleEdit)
         setNotify(true)
         setReservEdit(reservation.customerReservation)
@@ -272,7 +278,6 @@ const EditReserv = (props) => {
                         {dateValue ? dateValue.day + " " + dateValue.month.shortName + " " + dateValue.year : reserv.dates}
                         <DatePicker 
                             style={{
-                                width: "150px",
                                 height: "40px",
                                 border: "1px solid rgba(0, 40, 100, 0.25)"
                             }}
@@ -511,7 +516,7 @@ const EditReserv = (props) => {
                         :
                         <input type="text" 
                             value={reservation.request || "None"}
-                            id="request"
+                            id="request-field"
                             onChange={(e) => handleChange(e)}
                             placeholder="If any"/>
                         }
@@ -524,7 +529,7 @@ const EditReserv = (props) => {
                         </div>
                         <input type="text"
                             value={reservation.note}
-                            id="note"
+                            id="note-field"
                             onChange={(e) => handleChange(e)}
                             placeholder="If any"/>
                     </div>

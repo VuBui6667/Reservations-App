@@ -1325,14 +1325,316 @@
         "Birthday"
       ],
       "id": 56
-    }
-  ],
-  "notifyEdit": [
+    },
     {
-      "1": true,
-      "state": false,
-      "reservation": false,
-      "id": 1
+      "adultsReservation": 1,
+      "childrenReservation": 1,
+      "timeReservation": "12:00 PM",
+      "table": "105",
+      "numberChairs": "6",
+      "request": "",
+      "note": "",
+      "dates": "15 Mar 2022",
+      "customerReservation": {
+        "id": 1,
+        "firstName": "Vu",
+        "lastName": "Bui",
+        "contact": "9123 4567",
+        "birthday": "25/09/2002",
+        "email": "vubui6667@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Late",
+      "occasion": "",
+      "id": 57
+    },
+    {
+      "adultsReservation": 2,
+      "childrenReservation": 1,
+      "timeReservation": "12:30 PM",
+      "table": "106",
+      "numberChairs": "4",
+      "request": "",
+      "note": "",
+      "dates": "15 Mar 2022",
+      "customerReservation": {
+        "id": 2,
+        "firstName": "Ken",
+        "lastName": "Chow",
+        "contact": "9123 02415",
+        "birthday": "15/11/2000",
+        "email": "KenChow151@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": "",
+      "id": 58
+    },
+    {
+      "adultsReservation": 2,
+      "childrenReservation": 2,
+      "timeReservation": "1:00 PM",
+      "table": "106",
+      "numberChairs": "4",
+      "request": "",
+      "note": "",
+      "dates": "15 Mar 2022",
+      "customerReservation": {
+        "id": 2,
+        "firstName": "Ken",
+        "lastName": "Chow",
+        "contact": "9123 02415",
+        "birthday": "15/11/2000",
+        "email": "KenChow151@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": "",
+      "id": 59
+    },
+    {
+      "adultsReservation": 2,
+      "childrenReservation": 2,
+      "timeReservation": "1:00 PM",
+      "table": "105",
+      "numberChairs": "6",
+      "request": "",
+      "note": "",
+      "dates": "15 Mar 2022",
+      "customerReservation": {
+        "id": 3,
+        "firstName": "Tommy",
+        "lastName": "Tan",
+        "contact": "9123 15141",
+        "birthday": "25/1/2000",
+        "email": "TommyTan251@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": "",
+      "id": 60
+    },
+    {
+      "adultsReservation": 3,
+      "childrenReservation": 4,
+      "timeReservation": "12:30 PM",
+      "table": "114",
+      "numberChairs": "6",
+      "request": "",
+      "note": "",
+      "dates": "15 Mar 2022",
+      "customerReservation": {
+        "id": 6,
+        "firstName": "Keli",
+        "lastName": "Tran",
+        "contact": "9123 01512",
+        "birthday": "15/7/1997",
+        "email": "KenTan512@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": "",
+      "id": 61
+    },
+    {
+      "adultsReservation": 3,
+      "childrenReservation": 4,
+      "timeReservation": "1:15 PM",
+      "table": "110",
+      "numberChairs": "8",
+      "request": "",
+      "note": "",
+      "dates": "15 Mar 2022",
+      "customerReservation": {
+        "id": 5,
+        "firstName": "Michael",
+        "lastName": "Nguyen",
+        "contact": "9123 14156",
+        "birthday": "23/5/1999",
+        "email": "MichaelNg235@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": [
+        "Anniversary"
+      ],
+      "id": 62
+    },
+    {
+      "adultsReservation": 1,
+      "childrenReservation": 1,
+      "timeReservation": "12:30 PM",
+      "table": "108",
+      "numberChairs": "14",
+      "request": "",
+      "note": "",
+      "dates": "16 Mar 2022",
+      "customerReservation": {
+        "id": 1,
+        "firstName": "Vu",
+        "lastName": "Bui",
+        "contact": "9123 4567",
+        "birthday": "25/09/2002",
+        "email": "vubui6667@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "No Show",
+      "occasion": "",
+      "id": 63
+    },
+    {
+      "adultsReservation": 1,
+      "childrenReservation": 2,
+      "timeReservation": "12:30 PM",
+      "table": "Unassigned",
+      "numberChairs": "6",
+      "request": "",
+      "note": "",
+      "dates": "17 Mar 2022",
+      "customerReservation": {
+        "id": 1,
+        "firstName": "Vu",
+        "lastName": "Bui",
+        "contact": "9123 4567",
+        "birthday": "25/09/2002",
+        "email": "vubui6667@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Cancelled",
+      "occasion": "",
+      "id": 64
+    },
+    {
+      "adultsReservation": 3,
+      "childrenReservation": 5,
+      "timeReservation": "12:45 PM",
+      "table": "107",
+      "numberChairs": "14",
+      "request": "",
+      "note": "",
+      "dates": "17 Mar 2022",
+      "customerReservation": {
+        "id": 2,
+        "firstName": "Ken",
+        "lastName": "Chow",
+        "contact": "9123 02415",
+        "birthday": "15/11/2000",
+        "email": "KenChow151@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Late",
+      "occasion": "",
+      "id": 65
+    },
+    {
+      "adultsReservation": 2,
+      "childrenReservation": 2,
+      "timeReservation": "12:15 PM",
+      "table": "110",
+      "numberChairs": "8",
+      "request": "",
+      "note": "",
+      "dates": "17 Mar 2022",
+      "customerReservation": {
+        "id": 3,
+        "firstName": "Tommy",
+        "lastName": "Tan",
+        "contact": "9123 15141",
+        "birthday": "25/1/2000",
+        "email": "TommyTan251@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Completed",
+      "occasion": "",
+      "id": 66
+    },
+    {
+      "adultsReservation": 2,
+      "childrenReservation": 1,
+      "timeReservation": "12:15 PM",
+      "table": "105",
+      "numberChairs": "6",
+      "request": "",
+      "note": "",
+      "dates": "18 Mar 2022",
+      "customerReservation": {
+        "id": 4,
+        "firstName": "Savannah",
+        "lastName": "Nguyen",
+        "contact": "9123 14415",
+        "birthday": "15/5/2001",
+        "email": "SavannahNguyen@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": "",
+      "id": 67
+    },
+    {
+      "adultsReservation": 2,
+      "childrenReservation": 3,
+      "timeReservation": "12:30 PM",
+      "table": "107",
+      "numberChairs": "14",
+      "request": "",
+      "note": "",
+      "dates": "18 Mar 2022",
+      "customerReservation": {
+        "id": 7,
+        "firstName": "Tanny",
+        "lastName": "Lim",
+        "contact": "9123 16134",
+        "birthday": "1/2/2000",
+        "email": "TannyTan0102@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": "",
+      "id": 68
+    },
+    {
+      "adultsReservation": 3,
+      "childrenReservation": 1,
+      "timeReservation": "12:15 PM",
+      "table": "105",
+      "numberChairs": "6",
+      "request": "",
+      "note": "",
+      "dates": "21 Mar 2022",
+      "customerReservation": {
+        "id": 1,
+        "firstName": "Vu",
+        "lastName": "Bui",
+        "contact": "9123 4567",
+        "birthday": "25/09/2002",
+        "email": "vubui6667@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Booked",
+      "occasion": "",
+      "id": 69
+    },
+    {
+      "adultsReservation": 2,
+      "childrenReservation": 1,
+      "timeReservation": "12:30 PM",
+      "table": "106",
+      "numberChairs": "4",
+      "request": "",
+      "note": "",
+      "dates": "21 Mar 2022",
+      "customerReservation": {
+        "id": 2,
+        "firstName": "Ken",
+        "lastName": "Chow",
+        "contact": "9123 02415",
+        "birthday": "15/11/2000",
+        "email": "KenChow151@gmail.com",
+        "tag": ""
+      },
+      "statusReservation": "Confirmed",
+      "occasion": "",
+      "id": 70
     }
   ]
 }

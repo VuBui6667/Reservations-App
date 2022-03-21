@@ -24,6 +24,8 @@ function Home() {
         setNotify(false)
     },4000
   )
+
+
   useEffect(() => {
     const timeoutID = window.setTimeout(() => {
       setSkeleton(false)
@@ -49,7 +51,7 @@ function Home() {
           reservEdit.statusReservation === "Cancelled" ? `${reservEdit.customerReservation.firstName} ${reservEdit.customerReservation.lastName}'s Reservation has been cancelled.` :
           reservEdit.firstName ? `${reservEdit.firstName}  ${reservEdit.lastName}'s Reservation Successfully Updated!` : null
         : null}
-        <box-icon name='x' color="white" size="md" style={{marginLeft: "10px"}} onClick={() => setNotify(false)}></box-icon>
+        <box-icon name='x' color="white" size="md" style={{marginLeft: "5px"}} onClick={() => setNotify(false)}></box-icon>
       </div>
       <TransformWrapper
         initialScale={1}
@@ -62,7 +64,6 @@ function Home() {
             <div className="zoom-out zoom-item" onClick={() => zoomOut()}><box-icon name='zoom-out' color='#7C69EF' size="md"></box-icon></div>
             <div className="full-screen zoom-item" onClick={() => resetTransform()}><box-icon name='fullscreen' color='#7C69EF' size="md"></box-icon></div>
           </div>
-          <div className="setting-tables"><div><box-icon name='move' color='#7C69EF' size="md"></box-icon></div></div>
             <TransformComponent>
               <div className="sub-container">
                 <Tables />
@@ -72,7 +73,8 @@ function Home() {
         )}
       </TransformWrapper>
       <StatusTable />
-      {showModal ? <ModalBooking showModal={showModal} setShowModal={setShowModal} styleName="animate__fadeInUp"/>: <ModalBooking styleName="animate__fadeOutDown"/>}
+      {/* {showModal ? <ModalBooking showModal={showModal} setShowModal={setShowModal}/>: null} */}
+      <ModalBooking showModal={showModal} setShowModal={setShowModal}/>
       {time > "09:00" ?
         <div className="add-new" onClick={() => setShowModal(!showModal)}>{showModal ? <box-icon name='x' size="md" color="white" style={{marginTop: "10px"}}></box-icon> : "+"}</div>
       : <div className="add-new" style={{opacity: "0.5"}}>+</div>}

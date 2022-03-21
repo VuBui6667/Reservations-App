@@ -26,7 +26,7 @@ const ModalWarning = () => {
     }
 
     return (
-        <div className="modal-cancel" onClick={() => setWarning(false)} style={{display: warning ? "flex" : "none"}}>
+        <div className="modal-warning" onClick={() => setWarning(false)} style={{display: warning ? "flex" : "none"}}>
             <div className="layout-modal"></div>
             <div className="container-modal-cancel" onClick={e => e.stopPropagation()}>
                 <img src={message_Error}/>

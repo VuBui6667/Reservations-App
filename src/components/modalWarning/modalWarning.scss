@@ -1,4 +1,4 @@
-.modal-cancel {
+.modal-warning {
     .layout-modal {
         position: absolute;
         top: 0;
@@ -12,7 +12,10 @@
     .container-modal-cancel { 
         position: absolute;
         top: 20%;
-        left: 33.33%;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
         z-index: 100;
         width: 600px;
         height: 300px;

@@ -42,7 +42,10 @@ const ModalCancel = () => {
                 <img src={message_Error}/>
                 {reservEdit.customerReservation ? 
                 <>
-                <div className="title-cancel">Cancel Reservation #R{reservEdit.customerReservation.contact[5]}{reservEdit.customerReservation.contact[6]}{reservEdit.customerReservation.contact[7]}{reservEdit.customerReservation.contact[8]}{reservEdit.customerReservation.firstName[0]}{reservEdit.customerReservation.lastName[0]}</div>
+                <div className="title-cancel">Cancel Reservation 
+                    <span className="title-desktop"> #R{reservEdit.customerReservation.contact[5]}{reservEdit.customerReservation.contact[6]}{reservEdit.customerReservation.contact[7]}{reservEdit.customerReservation.contact[8]}{reservEdit.customerReservation.firstName[0]}{reservEdit.customerReservation.lastName[0]}</span>
+                    <div className="title-mobile"> #R{reservEdit.customerReservation.contact[5]}{reservEdit.customerReservation.contact[6]}{reservEdit.customerReservation.contact[7]}{reservEdit.customerReservation.contact[8]}{reservEdit.customerReservation.firstName[0]}{reservEdit.customerReservation.lastName[0]}</div>
+                </div>
                 <div className="sub-title-cancel">for {reservEdit.customerReservation.firstName} {reservEdit.customerReservation.lastName}?</div>
                 <div className="control-cancel">
                     <div className="deny-cancel" onClick={() => setCancelReserv(!cancelReserv)}>Not Now</div>

@@ -1,15 +1,43 @@
+@mixin mobile {
+    @media only screen and (max-width: 600px) {
+        @content;
+    }
+  }
+  
+  @mixin tablet {
+    @media only screen and (max-width: 1025px) {
+        @content;
+    }
+  }
+
 .modalBooking {
     width: 960px;
     height: 600px;
     background-color: #F1F4F8;
-    opacity: 0.8;
     position: absolute;
     top: 5%;
-    right: 8%;
+    right: 6%;
+    z-index: 100;
     border: 1px  solid;
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.14), 0px 2px 2px rgba(0, 0, 0, 0.12), 0px 1px 3px rgba(0, 0, 0, 0.2);   
     border-radius: 10px;
-    margin-left: -600px;
+    @include tablet {
+        width: 450px;
+        left: 19%;
+        top: 15%;
+        height: 800px;
+    }
+    @include mobile {
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 800px;
+        z-index: 100;
+        border-radius: 0px;
+        border: none;
+    }
 }
 
 
@@ -78,10 +106,18 @@
     }
     margin: 0 18px;
     width: 924px;
-    height: 465px;
     overflow-y: scroll;
     margin-top: 15px;
     height: 410px;
+    @include tablet {
+        height: 600px;
+        width: 100%;
+    }
+    @include mobile {
+        width: 100%;
+        overflow-x: hidden;
+        width: calc(100vw - 40px);
+    }
     .containers-title {
         color: #506690;
         font-weight: 700;
@@ -93,22 +129,44 @@
     .booking-container1 {
         float: left;
         width: 66%;
+        @include tablet {
+            float: none;
+            width: 420px;
+        }
+        @include mobile {
+            width: 100vw;
+        }
         .reservation-details {
             background-color: #fff;
             height: 320px;
             padding: 16px;
+            @include tablet {
+                height: 490px;
+            }
+            @include mobile {
+                height: 640px;
+            }
         }
         .reservation-date {
             display: flex;
             justify-content: space-between;
-            height: 74px;
             margin-top: 30px;
+            @include tablet {
+                display: block;
+            }
             .reservation-date-title {
                 color: #1B2A4E;
                 font-weight: 600;
                 line-height: 24px;
                 font-size: 18px;
                 margin-right: 20px; 
+            }
+            .container-dates {
+                display: flex;
+                @include tablet {
+                    flex-wrap: wrap;
+                }
+
             }
             .reservation-date-item {
                 margin: 0 2px;
@@ -124,6 +182,14 @@
                 font-weight: 400;
                 font-size: 16px;
                 transition: 0.4s;
+                @include tablet {
+                    width: 20%;
+                    margin-right: 20px;
+                    margin-top: 20px;
+                }
+                @include mobile {
+                    width: 16%;
+                }
                 p:nth-child(2) {
                     font-weight: 600;
                 }
@@ -142,6 +208,9 @@
                 font-size: 16px;
                 transition: 0.4s;
                 cursor: pointer;
+                @include tablet {
+                    margin-top: 20px;
+                }
                 p:nth-child(2) {
                     font-weight: 600;
                 }
@@ -161,15 +230,33 @@
             margin-top: 38px;
             display: flex;
             justify-content: space-between;
+            @include mobile {
+                display: block;
+                .type-service {
+                    width: 320px;
+                }
+            }
+            .type-service {
+                width: 180px;
+            }
             .number-adults, .number-children {
                 display: flex;
                 align-items: center;
+                @include tablet{
+                    display: block;
+                }
+                @include mobile {
+                    margin: 15px 0;
+                }
                 .adults-title, .children-title {
                     color: #1B2A4E;
                     font-weight: 600;
                     line-height: 24px;
                     font-size: 18px;
-                    margin-right: 10px; 
+                    margin-right: 10px;
+                    @include tablet {
+                        margin-bottom: 5px;
+                    } 
                 }
             }
         }
@@ -177,23 +264,45 @@
             margin-top: 30px;
             display: flex;
             justify-content: space-between;
+            @include mobile {
+                display: block;
+                margin-top: 10px;
+                .type-service {
+                    width: 320px;
+                }
+            }
+            .type-service {
+                width: 180px;
+            }
             .reservation-time, .reservation-table {
                 display: flex;
-                align-items: center;    
+                align-items: center;  
+                @include tablet{
+                    display: block;
+                }  
+                @include mobile {
+                    margin: 15px 0;
+                }
                 .time-title, .table-title {
                     color: #1B2A4E;
                     font-weight: 600;
                     line-height: 24px;
                     font-size: 18px;
                     margin-right: 22px; 
+                    @include tablet {
+                        margin-bottom: 5px;
+                    } 
                 }
             }
         }
         .additional-details {
             background-color: #fff;
-            height: 420px;
+            height: 400px;
             padding: 16px;
             margin-top: 18px;
+            @include tablet {
+                height: 520px;
+            }
             .occasion {
                 margin-top: 26px;
                 .occasion-title {
@@ -207,12 +316,26 @@
                     margin-top: 16px;
                     display: flex;
                     justify-content: space-between;
+                    @include tablet {
+                        flex-wrap: wrap;
+                    }
+                    @include mobile {
+                        justify-content: start;
+                    }
                     .occasion-item {
                         font-weight: 600;
                         color: #7C69EF;
                         border: 1px solid rgba(0, 40, 100, 0.12);
                         border-radius: 4px;
                         padding: 8px 12px;
+                        @include tablet {
+                            margin-bottom: 10px;
+                            width: 160px;
+                        }
+                        @include mobile {
+                            width: 140px;
+                            margin-right: 28px;
+                        }
                     }
                 }
             }
@@ -225,7 +348,7 @@
                     font-size: 18px;
                     margin-right: 22px; 
                 }
-                .request-input, .notes-input {
+                #note, #request {
                     color: #ABABAB;
                     font-weight: 500;
                     line-height: 20px;
@@ -235,6 +358,12 @@
                     width: 580px;
                     height: 56px;
                     border: 1px solid rgba(0, 40, 100, 0.12);
+                    @include tablet {
+                        width: 380px;
+                    }
+                    @include mobile {
+                        width: 310px;
+                    }
                 }
             }
         }
@@ -242,10 +371,20 @@
     .booking-container2 {
         float: right;
         width: 32%;
+        @include tablet {
+            float: none;
+            width: 400px;
+        }
+        @include mobile {
+            width: 100vw;
+        }
         .diner-details {
             background-color: #fff;
             height: 120px;
             padding: 16px;
+            @include tablet {
+                margin-top: 20px;
+            }
             .search-diner {
                 margin-top: 16px;
                 color: #ABABAB;
@@ -339,6 +478,11 @@
     left: 0;
     right: 0;
     z-index: 99;
+    height: 60px;
+    @include mobile {
+        border: none;
+        border-radius: 0%;
+    }
     .booking-cancel {
         width: 158px;
         height: 38px;
@@ -349,6 +493,11 @@
         align-items: center;
         justify-content: center;
         margin: 10px 18px;
+        border-radius: 4px;
+        &:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
     }
     .booking-add {
         width: 158px;
@@ -361,6 +510,7 @@
         align-items: center;
         justify-content: center;
         margin: 10px 18px;
+        border-radius: 4px;
         &:hover {
             opacity: 0.8;
             cursor: pointer;
