@@ -37,7 +37,7 @@ const Sidebar = () => {
   const [numberAbsent, setNumberAbsent] = useState(0)
   const {tableClashed, setTableClashed} = useContext(TableClashed)
   const {tableFlow, setTableFlow} = useContext(TableFlow)
-  const {openRes} = useContext(OpenRes)
+  const {openRes, setOpenRes} = useContext(OpenRes)
 
   // const dispatch = useDispatch()
   // const resetStatus = useSelector((state) => state.resetReducer.reset)
@@ -112,7 +112,9 @@ const Sidebar = () => {
     setNumberSeated(0)
     setNumberCompleted(0)
     setNumberAbsent(0)
+    setNumberCover(0)
     reservations.forEach(reservation => {
+      setNumberCover(prevNumber => prevNumber + (reservation.childrenReservation + reservation.adultsReservation))
       if(reservation.statusReservation === "Booked" || reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Late") {
         setNumberUpcomming(prevNumber => prevNumber+1)
       } else if(reservation.statusReservation === "Seated") {
@@ -133,13 +135,10 @@ const Sidebar = () => {
   ] 
 
   useEffect(() => {
-    setNumberCover(0)
+    setnumberBooking(0)
     setNewReserv(
       reservations.filter((reservation, idx) => {
         setnumberBooking(idx+1)
-        setNumberCover((numberCover) => {
-          return numberCover + reservation.childrenReservation + reservation.adultsReservation
-        })
         if(filterService ===  "upcomming") {
           return (
             reservation.statusReservation === "Booked" ||
@@ -188,7 +187,7 @@ const Sidebar = () => {
         }
       })
       if(count !== 0) {
-        if(!tableClashed.includes(reservation.table)) {
+        if(!tableClashed.includes(reservation.table) && reservation.table !== "Unassigned") {
           setTableClashed((prevTable) => [...prevTable, reservation.table])
         }
       }
@@ -294,15 +293,22 @@ const Sidebar = () => {
                   <box-icon name='phone' color='#506690'></box-icon>
                   {reservation.timeReservation}</span>
                 <div>
-                  <p className="number-people">
+                  {reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation ?
+                    <p className="number-people" style={{color: "#DF4759"}}>
+                      <box-icon name='group' color='#DF4759' style={{marginRight: "4px"}}></box-icon> 
+                      {numberPeople}</p>
+                  :
+                    <p className="number-people">
                     <box-icon name='group' color='#506690' style={{marginRight: "4px"}}></box-icon> 
                     {numberPeople}</p>
+                  }
                   <p className="number-table" 
                     style={{color: reservation.table === "Unassigned" && 
-                                    reservation.statusReservation !== "Cancelled" ||
+                                    reservation.statusReservation !== "Cancelled" &&
+                                    reservation.statusReservation !== "No Show" ||
                                     tableClashed.includes(reservation.table) ? "#DF4759" 
                           : null}}>
-                    {reservation.table === "Unassigned" && reservation.statusReservation !== "Cancelled"  || tableClashed.includes(reservation.table) ?
+                    {(reservation.table === "Unassigned" && reservation.statusReservation !== "Cancelled" && reservation.statusReservation !== "No Show") || tableClashed.includes(reservation.table) ?
                       <MdOutlineChair style={{color: "#DF4759", fontSize: "20px", marginRight: "5px"}}/> :
                       <MdOutlineChair style={{fontSize: "20px", marginRight: "5px"}}/>
                     }
@@ -446,7 +452,7 @@ const Sidebar = () => {
       </div>
   </div>
   {openRes && width < 600 ?
-  <div className="layout-sidebar" ></div> :
+  <div className="layout-sidebar" onClick={() => setOpenRes(false)}></div> :
   null}
   </>
   )

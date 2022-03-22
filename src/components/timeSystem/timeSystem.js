@@ -1,15 +1,15 @@
 import React from 'react'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useContext } from 'react'
 import { ResetContext, TimeReserv, ReservationsContext } from '../../App'
 import reservationAPI from '../../api/reservationAPI'
-// import { DateObject } from "react-multi-date-picker";
+import { DateObject } from "react-multi-date-picker";
 
 export default function TimeSystem() {
     const {time, setTime} = useContext(TimeReserv)
     const {reset, setReset} = useContext(ResetContext)
     const {reservations} = useContext(ReservationsContext)
-    // const date = new DateObject()
-
+    const date = new DateObject()
+    const dateCurrent = date.day + " " + date.month.shortName + " " + date.year
 
     useEffect(() => {
         setInterval(() => {
@@ -42,11 +42,22 @@ export default function TimeSystem() {
         } catch(error) {
             console.log(error)
         }
+    }
+
+    const handleNoShow = async(reserv) => {
+      try {
+        await reservationAPI.patch(reserv.id, {table: "Unassigned"})
+        setReset(!reset)
+      } catch(error) {
+        console.log(error)
       }
+    }
+
 
     useEffect(() => {
-        reservations.forEach((reservation, index) => {
-          let timeReserv = reservation.timeReservation
+        reservations.forEach((reservation) => {
+          if(dateCurrent === reservation.dates) {
+            let timeReserv = reservation.timeReservation
             if(getTwentyFourHourTime(timeReserv) < time && (reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Booked") && reservation.statusReservation !== "No Show") {
                 handleTimeReserv(reservation, "Late")
             }
@@ -62,8 +73,14 @@ export default function TimeSystem() {
                 handleTimeReserv(reservation, "Completed")
               }
             }
+            if(reservation.statusReservation === "No Show") {
+              if(time > "14:00") {
+                handleNoShow(reservation)
+              }
+            }
+          }
         })
-    }, [time])
+    }, [time, reservations, reset])
     
 
 

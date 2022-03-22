@@ -1,5 +1,5 @@
 @mixin mobile {
-  @media only screen and (max-width: 600px) {
+  @media only screen and (max-width: 650px) {
       @content;
   }
 }
@@ -43,7 +43,7 @@
       padding-bottom: 2px;
       opacity: 0.8;
       @include mobile {
-        bottom: -30px;
+        bottom: -40px;
         width: 70px;
       }
     }

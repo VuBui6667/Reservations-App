@@ -1,5 +1,5 @@
 @mixin mobile {
-    @media only screen and (max-width: 600px) {
+    @media only screen and (max-width: 650px) {
         @content;
     }
   }
@@ -30,7 +30,7 @@
         right: 0;
         z-index: 100;
         width: 600px;
-        height: 300px;
+        height: 320px;
         background-color: white;
         display: flex;
         flex-direction: column;
@@ -52,12 +52,10 @@
             margin-top: 14px;
             font-size: 20px;
             font-weight: 400;
+            text-align: center;
             .warn-title {
                 font-weight: 700;
                 color: #1B2A4E;
-            }
-            @include mobile {
-                text-align: center;
             }
         }
         .control-cancel {
