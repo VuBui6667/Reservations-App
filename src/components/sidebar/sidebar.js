@@ -64,13 +64,13 @@ const Sidebar = () => {
 
   const {reservations, setReservations} = useContext(ReservationsContext)
 
-  const updateStatusReserv = async(StatusReserv, id) => {
+  const updateStatusReserv = async(id , StatusReserv) => {
     try {
       const response = await reservationAPI.patch(id, {statusReservation: StatusReserv})
-      setReset(false)
+      setReset(!reset)
       setReservEdit(response)
       setNotify(true)
-      // setTableFlow(null)
+      setTableFlow(null)
     } catch(error) {
       console.log(error)
     }
@@ -394,13 +394,13 @@ const Sidebar = () => {
                   <div className="deposit">{numberPeople} x $50 = ${numberPeople*50}</div>
                   <div className="controls-reservation" style={{display: showDetail.includes(index) ? 'flex' : 'none'}}>
                     <div className="control-reservation" 
-                    onClick={() => updateStatusReserv(statusReserv[1], reservation.id)}
+                    onClick={() => updateStatusReserv(reservation.id, statusReserv[1])}
                     style={{display: (reservation.statusReservation !== "Booked") ? "none" : "flex"}}>
                       <box-icon name='check-double' color="#fff" size='md'></box-icon>
                       <p>Confirmed</p>
                     </div> 
                     <div className="control-reservation" 
-                    onClick={() => updateStatusReserv(statusReserv[2], reservation.id)}
+                    onClick={() => updateStatusReserv(reservation.id, statusReserv[2])}
                     style={{width: reservation.statusReservation === "Confirmed" ||
                                     reservation.statusReservation === "No Show" ? "50%" : null, 
                             display: reservation.statusReservation === "Seated" || 
