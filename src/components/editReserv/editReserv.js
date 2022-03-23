@@ -186,14 +186,19 @@ const EditReserv = (props) => {
                 <div className="navigate-edit-reserv">
                     <div className="back-reserv" onClick={() => (setToggleEdit(!toggleEdit), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
                     {
-                    tableClashed.includes(reservation.table) ?
+                    tableClashed.includes(reservation.table) && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
-                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation ?
+                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && !tableClashed.includes(reservation.table) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity."))}>
+                        <box-icon name='save' color='#7C69EF'></box-icon> 
+                    Save Changes</div> :
+                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && tableClashed.includes(reservation.table) ?
+                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
+                        onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
@@ -281,7 +286,7 @@ const EditReserv = (props) => {
                         <DatePicker 
                             style={{
                                 height: "40px",
-                                border: "1px solid rgba(0, 40, 100, 0.25)"
+                                border: "1px solid rgba(0, 40, 100, 0.25)",
                             }}
                             ref={datePickerRef} 
                             value={dateValue}
@@ -550,7 +555,7 @@ const EditReserv = (props) => {
                         <div>None</div>
                     </div>
                 </div>
-                <div className="footer-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : "flex"}}>
+                <div className="footer-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" || reserv.statusReservation === "Completed" ? "none" : "flex"}}>
                     <div className="cancel-reserv" onClick={() => (setCancelReserv(!cancelReserv), prepareCancel())}>Cancel Reservation</div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useContext} from "react";
+import React, {useState, useRef, useEffect, useContext, useCallback} from "react";
 import './modalBooking.scss'
 import DatePicker from "react-multi-date-picker";
 import { DateObject } from "react-multi-date-picker";
@@ -22,7 +22,18 @@ const ModalBooking = (props) => {
     const setShowModal = props.setShowModal
     const showModal = props.showModal
     const {reset, setReset} = useContext(ResetContext)
+    const [checkReserv, setCheckReserv] = useState([])
+    const [handleExcept, setHandleExcept] = useState(true)
 
+
+    const [width, setWidth]   = useState(window.innerWidth);
+    const updateDimensions = () => {
+      setWidth(window.innerWidth);
+    }
+    useEffect(() => {
+        window.addEventListener("resize", updateDimensions);
+        return () => window.removeEventListener("resize", updateDimensions);
+    }, [width]);
  
     const [reservation, setReservation] = useState({
         adultsReservation: "",
@@ -36,7 +47,7 @@ const ModalBooking = (props) => {
         customerReservation: "",
         statusReservation: "Booked",
         occasion: ""
-    }, [showModal])
+    })
     useEffect(() => {
         const fetchCustomers = async () =>  {
           try {
@@ -50,12 +61,16 @@ const ModalBooking = (props) => {
       }, [])
     
     const fetchReservations = async () => {
-        try {
-            await reservationAPI.post(reservation)
-            setShowModal(!showModal)
-            setReset(!reset)
-        } catch(error) {
-            console.log(error)
+        if(checkReserv.includes(1) && checkReserv.includes(2) && checkReserv.includes(3) && checkReserv.includes(4)) {
+            try {
+                await reservationAPI.post(reservation)
+                setShowModal(!showModal)
+                setReset(!reset)
+            } catch(error) {
+                console.log(error)
+            }
+        } else {
+            setHandleExcept(false)
         }
     }
 
@@ -181,6 +196,15 @@ const ModalBooking = (props) => {
         const newReservation={...reservation}
         newReservation[options.id] = options.label
         setReservation(newReservation)
+        if(options.id === "adultsReservation" && !checkReserv.includes(1)) {
+            setCheckReserv(prev => [...prev, 1])
+        }
+        if(options.id === "childrenReservation" && !checkReserv.includes(2)) {
+            setCheckReserv(prev => [...prev, 2])
+        }
+        if(options.id === "timeReservation" && !checkReserv.includes(3)) {
+            setCheckReserv(prev => [...prev, 3])
+        }
     }
 
     const handleChairs = (options) => {
@@ -205,6 +229,9 @@ const ModalBooking = (props) => {
         const newReservation={...reservation}
         newReservation["customerReservation"] = customers[options.value-1]
         setReservation(newReservation)
+        if(!checkReserv.includes(4)) {
+            setCheckReserv(prev => [...prev, 4])
+        }
     }
 
     const handleOccasion = (index) => {
@@ -399,6 +426,10 @@ const ModalBooking = (props) => {
                                     color: "#506690 !important",
                                     fontWeight: "400"
                                     }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: `${handleExcept === false && !checkReserv.includes(1) ? "#DF4759" : "#a3a3a3"}`
+                                    })
                                 }}
                                 />
                             </div>
@@ -421,6 +452,10 @@ const ModalBooking = (props) => {
                                     color: "#506690 !important",
                                     fontWeight: "400"
                                     }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: `${handleExcept === false && !checkReserv.includes(2) ? "#DF4759" : "#a3a3a3"}`
+                                    })
                                 }} 
                                 />
                             </div>
@@ -458,6 +493,10 @@ const ModalBooking = (props) => {
                                             ...provided,
                                             width: 300,
                                         }),
+                                        placeholder: (provided) => ({
+                                            ...provided,
+                                            color: `${handleExcept === false && !checkReserv.includes(3) ? "#DF4759" : "#a3a3a3"}`
+                                        })
                                     }}
                                 />
                             </div>
@@ -556,6 +595,10 @@ const ModalBooking = (props) => {
                                         ...provided,
                                         width: 265,
                                     }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: `${handleExcept === false && !checkReserv.includes(4) ? "#DF4759" : "#a3a3a3"}`
+                                    })
                                 }}
                         />
                     </div>

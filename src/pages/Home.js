@@ -19,11 +19,13 @@ function Home() {
 
   const {skeleton, setSkeleton} = useContext(Skeleton)
 
-  setTimeout(
-    function() {
-        setNotify(false)
-    },4000
-  )
+  useEffect(() => {
+    const Notify = window.setTimeout(() => {
+      setNotify(false)
+    }, 4000);
+
+    return () => window.clearTimeout(Notify);
+  }, [notify])
 
 
   useEffect(() => {
@@ -37,7 +39,7 @@ function Home() {
   return (
     <div className="main-container">
       {skeleton ? 
-        <Box sx={{ position: "absolute", right: "580px", bottom: "400px" }}>
+        <Box sx={{ position: "absolute", right: "38%", bottom: "50%" }}>
           <CircularProgress />
         </Box> 
       : null}

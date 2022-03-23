@@ -7,7 +7,7 @@ import reservationAPI from "../../api/reservationAPI"
 const ModalWarning = () => {
     const {reset, setReset} = useContext(ResetContext)
     const {setNotify} = useContext(NotifyContext)
-    const {reservEdit} = useContext(ReservNotify)
+    const {reservEdit, setReservEdit} = useContext(ReservNotify)
     const {warning, setWarning} = useContext(WarnContext)
     const {setTableFlow} = useContext(TableFlow)
     // const [nameReserv, setNameReserv] = useState()
@@ -15,10 +15,11 @@ const ModalWarning = () => {
 
     const saveReserv = async() => {
         try {
-        await reservationAPI.patch(reservEdit.id, reservEdit)
+        const response = await reservationAPI.patch(reservEdit.id, reservEdit)
         setReset(!reset)
         setWarning(false)
         setNotify(true)
+        setReservEdit(response.customerReservation)
         setTableFlow(null)
         } catch(error) {
           console.log(error)

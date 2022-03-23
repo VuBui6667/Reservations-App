@@ -37,7 +37,7 @@ const Sidebar = () => {
   const [numberAbsent, setNumberAbsent] = useState(0)
   const {tableClashed, setTableClashed} = useContext(TableClashed)
   const {tableFlow, setTableFlow} = useContext(TableFlow)
-  const {openRes} = useContext(OpenRes)
+  const {openRes, setOpenRes} = useContext(OpenRes)
 
   // const dispatch = useDispatch()
   // const resetStatus = useSelector((state) => state.resetReducer.reset)
@@ -64,13 +64,13 @@ const Sidebar = () => {
 
   const {reservations, setReservations} = useContext(ReservationsContext)
 
-  const updateStatusReserv = async(StatusReserv, id) => {
+  const updateStatusReserv = async(id , StatusReserv) => {
     try {
       const response = await reservationAPI.patch(id, {statusReservation: StatusReserv})
-      setReset(false)
+      setReset(!reset)
       setReservEdit(response)
       setNotify(true)
-      // setTableFlow(null)
+      setTableFlow(null)
     } catch(error) {
       console.log(error)
     }
@@ -112,7 +112,9 @@ const Sidebar = () => {
     setNumberSeated(0)
     setNumberCompleted(0)
     setNumberAbsent(0)
+    setNumberCover(0)
     reservations.forEach(reservation => {
+      setNumberCover(prevNumber => prevNumber + (reservation.childrenReservation + reservation.adultsReservation))
       if(reservation.statusReservation === "Booked" || reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Late") {
         setNumberUpcomming(prevNumber => prevNumber+1)
       } else if(reservation.statusReservation === "Seated") {
@@ -133,13 +135,10 @@ const Sidebar = () => {
   ] 
 
   useEffect(() => {
-    setNumberCover(0)
+    setnumberBooking(0)
     setNewReserv(
       reservations.filter((reservation, idx) => {
         setnumberBooking(idx+1)
-        setNumberCover((numberCover) => {
-          return numberCover + reservation.childrenReservation + reservation.adultsReservation
-        })
         if(filterService ===  "upcomming") {
           return (
             reservation.statusReservation === "Booked" ||
@@ -188,7 +187,7 @@ const Sidebar = () => {
         }
       })
       if(count !== 0) {
-        if(!tableClashed.includes(reservation.table)) {
+        if(!tableClashed.includes(reservation.table) && reservation.table !== "Unassigned") {
           setTableClashed((prevTable) => [...prevTable, reservation.table])
         }
       }
@@ -294,15 +293,22 @@ const Sidebar = () => {
                   <box-icon name='phone' color='#506690'></box-icon>
                   {reservation.timeReservation}</span>
                 <div>
-                  <p className="number-people">
+                  {reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation ?
+                    <p className="number-people" style={{color: "#DF4759"}}>
+                      <box-icon name='group' color='#DF4759' style={{marginRight: "4px"}}></box-icon> 
+                      {numberPeople}</p>
+                  :
+                    <p className="number-people">
                     <box-icon name='group' color='#506690' style={{marginRight: "4px"}}></box-icon> 
                     {numberPeople}</p>
+                  }
                   <p className="number-table" 
                     style={{color: reservation.table === "Unassigned" && 
-                                    reservation.statusReservation !== "Cancelled" ||
+                                    reservation.statusReservation !== "Cancelled" &&
+                                    reservation.statusReservation !== "No Show" ||
                                     tableClashed.includes(reservation.table) ? "#DF4759" 
                           : null}}>
-                    {reservation.table === "Unassigned" && reservation.statusReservation !== "Cancelled"  || tableClashed.includes(reservation.table) ?
+                    {(reservation.table === "Unassigned" && reservation.statusReservation !== "Cancelled" && reservation.statusReservation !== "No Show") || tableClashed.includes(reservation.table) ?
                       <MdOutlineChair style={{color: "#DF4759", fontSize: "20px", marginRight: "5px"}}/> :
                       <MdOutlineChair style={{fontSize: "20px", marginRight: "5px"}}/>
                     }
@@ -388,13 +394,13 @@ const Sidebar = () => {
                   <div className="deposit">{numberPeople} x $50 = ${numberPeople*50}</div>
                   <div className="controls-reservation" style={{display: showDetail.includes(index) ? 'flex' : 'none'}}>
                     <div className="control-reservation" 
-                    onClick={() => updateStatusReserv(statusReserv[1], reservation.id)}
+                    onClick={() => updateStatusReserv(reservation.id, statusReserv[1])}
                     style={{display: (reservation.statusReservation !== "Booked") ? "none" : "flex"}}>
                       <box-icon name='check-double' color="#fff" size='md'></box-icon>
                       <p>Confirmed</p>
                     </div> 
                     <div className="control-reservation" 
-                    onClick={() => updateStatusReserv(statusReserv[2], reservation.id)}
+                    onClick={() => updateStatusReserv(reservation.id, statusReserv[2])}
                     style={{width: reservation.statusReservation === "Confirmed" ||
                                     reservation.statusReservation === "No Show" ? "50%" : null, 
                             display: reservation.statusReservation === "Seated" || 
@@ -446,7 +452,7 @@ const Sidebar = () => {
       </div>
   </div>
   {openRes && width < 600 ?
-  <div className="layout-sidebar" ></div> :
+  <div className="layout-sidebar" onClick={() => setOpenRes(false)}></div> :
   null}
   </>
   )
