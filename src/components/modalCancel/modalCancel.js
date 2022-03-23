@@ -1,7 +1,7 @@
 import React, {useContext} from "react"
 import './modalCancel.scss'
 import message_Error from '../../image/message_error.png'
-import {CancelReserv, ReservNotify, ResetContext, NotifyContext} from '../../App'
+import {CancelReserv, ReservNotify, ResetContext, NotifyContext, TableFlow} from '../../App'
 import reservationAPI from "../../api/reservationAPI"
 
 const ModalCancel = () => {
@@ -9,14 +9,16 @@ const ModalCancel = () => {
     const {reset, setReset} = useContext(ResetContext)
     const {setNotify} = useContext(NotifyContext)
     const {reservEdit, setReservEdit} = useContext(ReservNotify)
+    const {tableFlow, setTableFlow} = useContext(TableFlow)
     // const [nameReserv, setNameReserv] = useState()
 
     const changeStatus = async() => {
         try {
         const response = await reservationAPI.patch(reservEdit.id, {statusReservation: "Cancelled", table: "Unassigned"})
+        setReset(!reset)
         setNotify(true)
         setReservEdit(response)
-        setReset(!reset)
+        setTableFlow(null)
         } catch(error) {
           console.log(error)
         }
