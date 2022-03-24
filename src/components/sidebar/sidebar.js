@@ -20,7 +20,7 @@ const Sidebar = () => {
   const [value, setValue] = useState(false)
   const [toggleReserv, setToggleReserv] = useState(false)
   const [showDetail, setShowDetail] = useState([])
-  const [showEdit, setShowEdit] = useState()
+  const [showEdit, setShowEdit] = useState(null)
   const {reset, setReset} =   useContext(ResetContext)
   const {setReservEdit} = useContext(ReservNotify)
   const {setNotify} = useContext(NotifyContext)
@@ -193,7 +193,7 @@ const Sidebar = () => {
       }
     })
     if(tableFlow === null) {
-      setShowEdit(!showEdit)
+      setShowEdit(null)
     }
   }, [reservations, reset])
   
@@ -286,7 +286,8 @@ const Sidebar = () => {
             return (
               <div key={index}>
               <div className="container-reservation" key={index} onClick={() => handleShowReserv(index)} 
-              style={{background: tableClashed.includes(reservation.table) || reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "#FFEEEB" : null}}>
+              style={{background: tableClashed.includes(reservation.table) || reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "#FFEEEB" : null,
+                      display: showEdit !== null ? "none" : "block"}}>
                 <span className="first-name">{reservation.customerReservation.firstName} </span>
                 <span className="last-name">{reservation.customerReservation.lastName}</span>
                 <span className="time-booking" style={{color: tableClashed.includes(reservation.table) ? "#DF4759" : null}}>
@@ -438,12 +439,10 @@ const Sidebar = () => {
               {/* style={{display: editReserv ? "block" : "none"}} */}
               <div className="container-edit-reserv"
               style={{display: showEdit === index ? 'block' : 'none'}}> 
-              {showEdit === index ?
                 <EditReserv 
                 idxReserv={reservation.id} editReserv={reservation} 
                 toggoleEdit={showEdit} setToggleEdit={setShowEdit}
                 />
-              :null}
               </div>
               </div>
               )
