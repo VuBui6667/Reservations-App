@@ -166,7 +166,7 @@ const EditReserv = (props) => {
         try {
         await reservationAPI.patch(idxReserv, reservation)
         setReset(!reset)
-        setToggleEdit(!toggleEdit)
+        setToggleEdit(null)
         setNotify(true)
         setReservEdit(reservation.customerReservation)
         } catch(error) {
@@ -184,7 +184,7 @@ const EditReserv = (props) => {
         <div className="edit-reserv">
             <div className="header-edit-reserv">
                 <div className="navigate-edit-reserv">
-                    <div className="back-reserv" onClick={() => (setToggleEdit(!toggleEdit), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
+                    <div className="back-reserv" onClick={() => (setToggleEdit(null), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
                     {
                     tableClashed.includes(reservation.table) && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
@@ -201,7 +201,7 @@ const EditReserv = (props) => {
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
-                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
+                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" || reserv.statusReservation === "Completed" ? "none" : null}}
                         onClick={() => (saveReserv(), setTableFlow(null))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div>

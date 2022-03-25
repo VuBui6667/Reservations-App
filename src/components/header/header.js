@@ -33,6 +33,7 @@ const Header = () => {
                 }
                 <p>Home</p>
             </div>
+            {time}
             <div className="header-navbar">
                 <div className="header-date nav-item">
                     <Datepicker 

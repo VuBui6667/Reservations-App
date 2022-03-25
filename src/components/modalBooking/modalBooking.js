@@ -255,19 +255,6 @@ const ModalBooking = (props) => {
           }
     }
 
-
-    // function handleCancel() {
-    //     const newReservation={...reservation}
-    //     newReservation["note"] = ""
-    //     newReservation["request"] = ""
-    //     newReservation["adultsReservation"] = ""
-    //     newReservation["childrenReservation"] = ""
-    //     newReservation["timeReservation"] = ""
-    //     newReservation["table"] = ""
-    //     setResetValue("")
-    //     setResevation(newReservation)
-    // }
-
     return (
         <div className={`modalBooking animate__animated ${showModal ? "animate__fadeInUp" : "animate__fadeOutDown"}`} style={{zIndex: showModal ? null : 0}}>
             <div className="booking-header">

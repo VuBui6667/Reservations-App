@@ -1,6 +1,6 @@
 import React from "react"
 import {useEffect, useContext} from "react"
-import { ReservationsContext, DatesReserv, ResetContext } from "../../App"
+import { ReservationsContext, DatesReserv, ResetContext, TimeReserv } from "../../App"
 import reservationAPI from '../../api/reservationAPI'
 
 export default function Reservations() {

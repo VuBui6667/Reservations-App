@@ -11,13 +11,22 @@ export default function TimeSystem() {
     const date = new DateObject()
     const dateCurrent = date.day + " " + date.month.shortName + " " + date.year
 
+    // useEffect(() => {
+    //   const secondsTimer = setInterval(() => {
+    //     let today = new Date()
+    //     let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
+    //     setTime(addMinutes(timeToday, 150))
+    //   }, 1000);
+    //   return () => clearInterval(secondsTimer);
+    // }, [time]);
+
     useEffect(() => {
-        setInterval(() => {
-            let today = new Date()
-            let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
-            setTime(timeToday)        
-          })
-    }, 5000)
+      setInterval(() => {
+          let today = new Date()
+          let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
+          setTime(addMinutes(timeToday, 60))        
+        })
+  }, 5000)
 
 
 
