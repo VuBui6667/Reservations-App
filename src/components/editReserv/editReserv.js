@@ -226,7 +226,6 @@ const EditReserv = (props) => {
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div>
                     }
-                    {/* onClick={saveReserv, notifyEditReserv} */}
                 </div>
                 <div className="info-reserv">
                     <div className="title-reserv">
