@@ -1,34 +1,39 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import 'boxicons'
 import './header.scss'
 import Datepicker from '../datepicker/datepicker'
 import Select from 'react-select'
 import { useContext } from 'react'
-import { TimeReserv } from '../../App'
-
+import { TimeReserv, OpenRes } from '../../App'
 
 const Header = () => {
-    const [show] = useState(false)
+    const [show] = useState(false)  
     const options = [
         { value: 'breakfast', label: 'Breakfast Service'},
         { value: 'lunch', label: 'Lunch Service'},
         { value: 'dinner', label: 'Dinner Service'}
     ]
-
-    const addMinutes = (paramTime, minute) => {
-        var t1 = new Date("1/1/2022 " + paramTime);
-        var t2 = new Date(t1.getTime() + minute*60000)
-        return t2.getHours() + ':' + ('0'+t2.getMinutes()).slice(-2); 
+    const {openRes, setOpenRes} = useContext(OpenRes)
+    const [width, setWidth]   = useState(window.innerWidth);
+    const updateDimensions = () => {
+      setWidth(window.innerWidth);
     }
+    useEffect(() => {
+        window.addEventListener("resize", updateDimensions);
+        return () => window.removeEventListener("resize", updateDimensions);
+    }, [openRes]);
 
-    const {time, setTime} = useContext(TimeReserv)
+    const {time} = useContext(TimeReserv)
     return (
         <div className="header" style={show ? { display:'none'} : {}}>
             <div className="header-icon">
-                <box-icon color='#869AB8'name='menu' size='md' type='logo' ></box-icon>
+                {
+                    width > 600 ? <box-icon color='#869AB8'name='menu' size='md' type='logo' ></box-icon> :
+                    <box-icon color='#869AB8'name='menu' size='md' type='logo' onClick={() => setOpenRes(!openRes)}></box-icon>
+                }
                 <p>Home</p>
             </div>
-            <div>{time}</div>
+            {time}
             <div className="header-navbar">
                 <div className="header-date nav-item">
                     <Datepicker 
@@ -38,7 +43,7 @@ const Header = () => {
                 <Select 
                 options={options} 
                 defaultValue={options[1]}
-                className="type-service"
+                className="time-service"
                 styles={{
                     control: (provided, state) => ({
                         ...provided,
@@ -53,8 +58,8 @@ const Header = () => {
                   }}
                 />
                 </div>
-                <div className="time-system" style={{color: time >= "12:00" && time <= "14:00" ? "#27ca27" : null, border: time >= "12:00"  && time <= "14:00" ? "1px solid #27ca27" : null }}>
-                    <box-icon type='solid' name='circle' color={time >= "12:00" && time <= "14:00" ? "#27ca27" : "#e0e5ec"} style={{marginRight: "5px"}}></box-icon>
+                <div className="time-system" style={{color: time >= "12:00" && time <= "15:00" ? "#27ca27" : null, border: time >= "12:00"  && time <= "15:00" ? "1px solid #27ca27" : null }}>
+                    <box-icon type='solid' name='circle' color={time >= "12:00" && time <= "15:00" ? "#27ca27" : "#e0e5ec"} style={{marginRight: "5px"}}></box-icon>
                     <p>NOW</p>
                 </div>
                 <div className="header-status nav-item"><box-icon name='note' color="#1B2A4E"></box-icon></div>

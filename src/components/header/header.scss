@@ -1,11 +1,28 @@
+@mixin mobile {
+    @media only screen and (max-width: 650px) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media only screen and (max-width: 1024px) {
+        @content;
+    }
+}
+
+@mixin flex($align-item, $justify-content) {
+    display: flex;
+    align-items: $align-item;
+    justify-content: $justify-content;
+}
+
 .header {
     height: 54px;
     background-color: #F1F4F8;
-    width: 100vw;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    width: 100%;
+    @include flex(center, space-between);
     z-index: 99;
+    position: fixed;
 }
 
 .header-navbar {
@@ -19,13 +36,18 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    @include mobile {
+        margin: 0 5px;
+    }
 }
 
-.header-date .input-date {
+.header-date {
+    .input-date {
     height: 40px;
     width: 244px;
     border: 1px solid rgba(0, 40, 100, 0.12);
     border-radius: 4px;
+    }
 }
 
 .date-icon {
@@ -57,15 +79,18 @@
     line-height: 23px;
     margin-right: 20px;
     font-weight: normal;
+    @include tablet {
+        display: none;
+    }
+    .icon-merchant {
+        width: 62px;
+        height: 40px;
+        border: 1px solid #1B2A4E;
+        border-radius: 45px;
+        margin-left: 10px;
+    }
 }
 
-.icon-merchant {
-    width: 62px;
-    height: 40px;
-    border: 1px solid #1B2A4E;
-    border-radius: 45px;
-    margin-left: 10px;
-}
 
 .header-icon {
     margin-left: 14px;
@@ -76,11 +101,17 @@
         color: #869AB8;
         font-weight: 700;
         margin-left: 10px;
+        @include mobile {
+            display: none;
+        }
     }
 }
 
-.type-service {
+.time-service {
     width: 180px;
+    @include mobile {
+        display: none;  
+    }
 }
 
 #react-select-3-listbox {

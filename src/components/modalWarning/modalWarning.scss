@@ -1,4 +1,16 @@
-.modal-cancel {
+@mixin mobile {
+    @media only screen and (max-width: 650px) {
+        @content;
+    }
+  }
+  
+  @mixin tablet {
+    @media only screen and (max-width: 1024px) {
+        @content;
+    }
+  }
+
+.modal-warning {
     .layout-modal {
         position: absolute;
         top: 0;
@@ -12,10 +24,13 @@
     .container-modal-cancel { 
         position: absolute;
         top: 20%;
-        left: 33.33%;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
         z-index: 100;
         width: 600px;
-        height: 300px;
+        height: 320px;
         background-color: white;
         display: flex;
         flex-direction: column;
@@ -24,6 +39,10 @@
         color: #1B2A4E;
         border-radius: 4px;
         box-shadow: rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.05) 0px 8px 32px;
+        @include mobile {
+            width: 80vw;
+            height: 400px;
+        }
         .title-cancel {
             font-weight: 700;
             font-size: 28px;
@@ -33,6 +52,7 @@
             margin-top: 14px;
             font-size: 20px;
             font-weight: 400;
+            text-align: center;
             .warn-title {
                 font-weight: 700;
                 color: #1B2A4E;
@@ -42,6 +62,10 @@
             display: flex;
             flex-direction: row;
             margin-top: 25px;
+            @include mobile {
+                flex-direction: column;
+                align-items: center;
+            }
             .deny-cancel {
                 width: 240px;
                 height: 45px;
@@ -55,6 +79,9 @@
                 font-weight: 600;
                 font-size: 18px;
                 transition: 0.5s;
+                @include mobile {
+                    margin: 10px 5px;
+                }
             }
             .deny-cancel:hover {
                 cursor: pointer;
@@ -74,6 +101,9 @@
                 font-weight: 600;
                 font-size: 18px;
                 transition: 0.5s;
+                @include mobile {
+                    margin: 10px 5px;
+                }
             }
             .accept-cancel:hover {
                 cursor: pointer;

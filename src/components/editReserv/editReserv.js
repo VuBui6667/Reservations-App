@@ -1,20 +1,20 @@
-import React, {useState, useRef, useContext} from 'react'
+import React, {useState, useRef, useContext, useEffect} from 'react'
 import DatePicker from 'react-multi-date-picker'
 import './editReserv.scss'
 import Select from 'react-select'
 import reservationAPI from '../../api/reservationAPI'
-import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, WarnContext } from "../../App"
+import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, WarnContext, ResetContext } from "../../App"
 import {MdOutlineChair} from "react-icons/md"
 import warningSign from '../../image/warning-sign.png'
 import { DateObject } from "react-multi-date-picker";
+// import { useSelector, useDispatch } from "react-redux";
+// import { reset } from "../../actions/reset" 
 
 const EditReserv = (props) => {
     const reserv = props.editReserv
     const toggleEdit = props.toggleEdit
     const setToggleEdit = props.setToggleEdit
     const idxReserv = props.idxReserv
-    const reset = props.reset
-    const setReset = props.setReset
     const [dateValue, setDateValue] = useState(false)
     const datePickerRef = useRef()
     const {tableClashed} = useContext(TableClashed)
@@ -28,6 +28,12 @@ const EditReserv = (props) => {
     const {cancelReserv, setCancelReserv} = useContext(CancelReserv)
     const {setTableFlow} = useContext(TableFlow)
     const {setWarning} = useContext(WarnContext)
+    const {reset, setReset} = useContext(ResetContext)
+
+
+    // const dispatch = useDispatch()
+    // const resetStatus = useSelector((state) => state.resetReducer.reset)
+
     const occasions = [
         'Casual',
         'Birthday',
@@ -40,7 +46,6 @@ const EditReserv = (props) => {
     const statusReserv = [
         {value: 1, label: "Booked"},
         {value: 2, label: "Confirmed"},
-        {value: 3, label: "Late"}
     ]
 
     const timeReserv = [
@@ -149,16 +154,19 @@ const EditReserv = (props) => {
           } else {
             setOccasionSelect((currentArray) => currentArray.filter((remainElement) => remainElement !== occasion))
           }
+    }
+
+    useEffect(() => {
         const newReservation={...reservation}
         newReservation["occasion"] = occasionSelect
         setReservartion(newReservation)
-    }
+    }, [occasionSelect])
 
     const saveReserv = async() => {
         try {
         await reservationAPI.patch(idxReserv, reservation)
-        setReset(true)
-        setToggleEdit(!toggleEdit)
+        setReset(!reset)
+        setToggleEdit(null)
         setNotify(true)
         setReservEdit(reservation.customerReservation)
         } catch(error) {
@@ -176,19 +184,24 @@ const EditReserv = (props) => {
         <div className="edit-reserv">
             <div className="header-edit-reserv">
                 <div className="navigate-edit-reserv">
-                    <div className="back-reserv" onClick={() => (setToggleEdit(!toggleEdit), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
+                    <div className="back-reserv" onClick={() => (setToggleEdit(null), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
                     {
-                    tableClashed.includes(reservation.table) ?
+                    tableClashed.includes(reservation.table) && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
-                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation ?
+                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && !tableClashed.includes(reservation.table) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
+                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && tableClashed.includes(reservation.table) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
+                        onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
+                        <box-icon name='save' color='#7C69EF'></box-icon> 
+                    Save Changes</div> :
+                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" || reserv.statusReservation === "Completed" ? "none" : null}}
                         onClick={() => (saveReserv(), setTableFlow(null))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div>
@@ -272,9 +285,8 @@ const EditReserv = (props) => {
                         {dateValue ? dateValue.day + " " + dateValue.month.shortName + " " + dateValue.year : reserv.dates}
                         <DatePicker 
                             style={{
-                                width: "150px",
                                 height: "40px",
-                                border: "1px solid rgba(0, 40, 100, 0.25)"
+                                border: "1px solid rgba(0, 40, 100, 0.25)",
                             }}
                             ref={datePickerRef} 
                             value={dateValue}
@@ -543,7 +555,7 @@ const EditReserv = (props) => {
                         <div>None</div>
                     </div>
                 </div>
-                <div className="footer-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : "flex"}}>
+                <div className="footer-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" || reserv.statusReservation === "Completed" ? "none" : "flex"}}>
                     <div className="cancel-reserv" onClick={() => (setCancelReserv(!cancelReserv), prepareCancel())}>Cancel Reservation</div>
                 </div>
             </div>

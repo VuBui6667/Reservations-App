@@ -1,37 +1,32 @@
 import React from 'react'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useContext } from 'react'
+import { ResetContext, TimeReserv, ReservationsContext } from '../../App'
 import reservationAPI from '../../api/reservationAPI'
-import { DatesReserv, ResetContext, TimeReserv } from '../../App'
-// import { DateObject } from "react-multi-date-picker";
+import { DateObject } from "react-multi-date-picker";
 
 export default function TimeSystem() {
     const {time, setTime} = useContext(TimeReserv)
-    const [reservations, setReservations] = useState([])
     const {reset, setReset} = useContext(ResetContext)
-    const {datesReserv} = useContext(DatesReserv)
-    // const date = new DateObject()
+    const {reservations} = useContext(ReservationsContext)
+    const date = new DateObject()
+    const dateCurrent = date.day + " " + date.month.shortName + " " + date.year
+
+    // useEffect(() => {
+    //   const secondsTimer = setInterval(() => {
+    //     let today = new Date()
+    //     let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
+    //     setTime(addMinutes(timeToday, 150))
+    //   }, 1000);
+    //   return () => clearInterval(secondsTimer);
+    // }, [time]);
 
     useEffect(() => {
-      const fetchReservations = async () =>  {
-        try {
-          const response = await reservationAPI.get(datesReserv)
-          setReservations(response)
-        } catch(error) {
-          console.log(error)
-        }
-      }
-      fetchReservations()
-    },[datesReserv])
-
-
-
-    useEffect(() => {
-        setInterval(() => {
-            let today = new Date()
-            let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
-            setTime(timeToday)        
-          })
-    }, 5000)
+      setInterval(() => {
+          let today = new Date()
+          let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
+          setTime(addMinutes(timeToday, 60))        
+        })
+  }, 5000)
 
 
 
@@ -56,11 +51,22 @@ export default function TimeSystem() {
         } catch(error) {
             console.log(error)
         }
+    }
+
+    const handleNoShow = async(reserv) => {
+      try {
+        await reservationAPI.patch(reserv.id, {table: "Unassigned"})
+        setReset(!reset)
+      } catch(error) {
+        console.log(error)
       }
+    }
+
 
     useEffect(() => {
-        reservations.forEach((reservation, index) => {
-          let timeReserv = reservation.timeReservation
+        reservations.forEach((reservation) => {
+          if(dateCurrent === reservation.dates) {
+            let timeReserv = reservation.timeReservation
             if(getTwentyFourHourTime(timeReserv) < time && (reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Booked") && reservation.statusReservation !== "No Show") {
                 handleTimeReserv(reservation, "Late")
             }
@@ -76,8 +82,14 @@ export default function TimeSystem() {
                 handleTimeReserv(reservation, "Completed")
               }
             }
+            if(reservation.statusReservation === "No Show") {
+              if(time > "14:00") {
+                handleNoShow(reservation)
+              }
+            }
+          }
         })
-    }, [time])
+    }, [time, reservations, reset])
     
 
 
