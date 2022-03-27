@@ -9,9 +9,9 @@ const StatusTable =  () => {
     return (
         <div className="container-status">
         <div className="show-status" onClick={handleStatus}><box-icon name='list-ul' color='#7C69EF' size='md'></box-icon>
-        <i className={"status-close animate__animated animate__faster " + (show ? "animate__fadeOut" : "animate__fadeIn animate__faster")} style={show ? { opacity:'0'} : {opacity: '1'}}></i>
+        <i className="status-close" style={show ? { opacity:'0'} : {opacity: '1'}}></i>
         </div>
-        <div className={"status-details animate__animated" + (show ? " animate__fadeInUp" : " animate__fadeOutDown")} style={show ? {opacity: '1'} : { opacity:'0'}}>
+        <div className={`status-details animate__animated ${show ? "animate__fadeInUp" : "animate__fadeOutDown"}`}>
         <div className="status-item">
           </div>
           <div className="status-item">

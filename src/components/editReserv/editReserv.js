@@ -1,31 +1,43 @@
-import React, {useState, useRef, useContext} from 'react'
+import React, {useState, useRef, useContext, useEffect} from 'react'
 import DatePicker from 'react-multi-date-picker'
 import './editReserv.scss'
 import Select from 'react-select'
 import reservationAPI from '../../api/reservationAPI'
-import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, WarnContext } from "../../App"
+import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, WarnContext, ResetContext } from "../../App"
 import {MdOutlineChair} from "react-icons/md"
 import warningSign from '../../image/warning-sign.png'
+import { DateObject } from "react-multi-date-picker";
+import { ReservationsContext } from '../../App'
+// import { useSelector, useDispatch } from "react-redux";
+// import { reset } from "../../actions/reset" 
 
 const EditReserv = (props) => {
     const reserv = props.editReserv
     const toggleEdit = props.toggleEdit
     const setToggleEdit = props.setToggleEdit
     const idxReserv = props.idxReserv
-    const reset = props.reset
-    const setReset = props.setReset
     const [dateValue, setDateValue] = useState(false)
     const datePickerRef = useRef()
     const {tableClashed} = useContext(TableClashed)
+    const date = new DateObject()
+    const [checkClashed, setCheckClashed] = useState(false)
 
     const [reservation, setReservartion] = useState(reserv)
     const [occasionSelect, setOccasionSelect] = useState(reserv.occasion)
+    const {reservations} = useContext(ReservationsContext)
 
     const {setNotify} = useContext(NotifyContext)
     const {setReservEdit} = useContext(ReservNotify)
     const {cancelReserv, setCancelReserv} = useContext(CancelReserv)
     const {setTableFlow} = useContext(TableFlow)
     const {setWarning} = useContext(WarnContext)
+    const {reset, setReset} = useContext(ResetContext)
+    const [containTables, setContainTables] = useState([])
+
+
+    // const dispatch = useDispatch()
+    // const resetStatus = useSelector((state) => state.resetReducer.reset)
+
     const occasions = [
         'Casual',
         'Birthday',
@@ -38,7 +50,6 @@ const EditReserv = (props) => {
     const statusReserv = [
         {value: 1, label: "Booked"},
         {value: 2, label: "Confirmed"},
-        {value: 3, label: "Late"}
     ]
 
     const timeReserv = [
@@ -53,6 +64,7 @@ const EditReserv = (props) => {
     ]
 
     const adultsReserv = [
+        { value: '0', label: 0, id:'adultsReservation'},
         { value: '1', label: 1, id:'adultsReservation'},
         { value: '2', label: 2, id:'adultsReservation'},
         { value: '3', label: 3, id:'adultsReservation'},
@@ -65,6 +77,7 @@ const EditReserv = (props) => {
         
     ]
     const childrenReserv = [
+        { value: '0', label: 0, id:'childrenReservation'},
         { value: '1', label: 1, id:'childrenReservation'},
         { value: '2', label: 2, id:'childrenReservation'},
         { value: '3', label: 3, id:'childrenReservation'},
@@ -97,9 +110,39 @@ const EditReserv = (props) => {
         {value: '18', label: '123', id:'table'},
     ]
 
+    const chairs = [
+        '0',
+        '6',
+        '4',
+        '14',
+        '14',
+        '8',
+        '8',
+        '6',
+        '6',
+        '8',
+        '6',
+        '6',
+        '2',
+        '2',
+        '2',
+        '2',
+        '4',
+        '12',
+        '12',
+    ]
+
     const handleSelect = (options) => {
         const newReservation={...reservation}
         newReservation[options.id] = options.label
+        setReservartion(newReservation)
+    }
+
+    const handleChairs = (options) => {
+        const newReservation={...reservation}
+        newReservation["numberChairs"] = chairs[options.value]
+        setReservartion(newReservation)
+        newReservation["table"] = options.label
         setReservartion(newReservation)
     }
 
@@ -115,16 +158,19 @@ const EditReserv = (props) => {
           } else {
             setOccasionSelect((currentArray) => currentArray.filter((remainElement) => remainElement !== occasion))
           }
+    }
+
+    useEffect(() => {
         const newReservation={...reservation}
         newReservation["occasion"] = occasionSelect
         setReservartion(newReservation)
-    }
+    }, [occasionSelect])
 
     const saveReserv = async() => {
         try {
         await reservationAPI.patch(idxReserv, reservation)
-        setReset(true)
-        setToggleEdit(!toggleEdit)
+        setReset(!reset)
+        setToggleEdit(null)
         setNotify(true)
         setReservEdit(reservation.customerReservation)
         } catch(error) {
@@ -136,25 +182,46 @@ const EditReserv = (props) => {
         setReservEdit(reservation)
     }
 
+    useEffect(() => {
+        setCheckClashed(false)
+        setContainTables([])
+        const CheckClashed = () => {
+            reservations.forEach((item) => {
+                if(item.table == reservation.table && item.id !== reservation.id) {
+                    setCheckClashed(true)
+                }
+                if(item.id !== reserv.id) {
+                    setContainTables((prev) => [...prev, item.table])
+                }
+            })
+        }
+        CheckClashed()
+    }, [reservation.table, reservation]) 
+
 
     let numberPeople = reserv.adultsReservation + reserv.childrenReservation
     return (
         <div className="edit-reserv">
             <div className="header-edit-reserv">
                 <div className="navigate-edit-reserv">
-                    <div className="back-reserv" onClick={() => (setToggleEdit(!toggleEdit), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
+                    <div className="back-reserv" onClick={() => (setToggleEdit(null), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
                     {
-                    tableClashed.includes(reserv.table) ?
+                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && (tableClashed.includes(reservation.table) || checkClashed === true)?
+                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
+                        onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
+                        <box-icon name='save' color='#7C69EF'></box-icon> 
+                    Save Changes</div> :
+                    tableClashed.includes(reservation.table) || checkClashed && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
-                    reserv.numberChairs < reserv.adultsReservation + reserv.childrenReservation ?
+                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && !tableClashed.includes(reservation.table) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
-                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
+                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" || reserv.statusReservation === "Completed" ? "none" : null}}
                         onClick={() => (saveReserv(), setTableFlow(null))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div>
@@ -238,15 +305,15 @@ const EditReserv = (props) => {
                         {dateValue ? dateValue.day + " " + dateValue.month.shortName + " " + dateValue.year : reserv.dates}
                         <DatePicker 
                             style={{
-                                width: "150px",
                                 height: "40px",
-                                border: "1px solid rgba(0, 40, 100, 0.25)"
+                                border: "1px solid rgba(0, 40, 100, 0.25)",
                             }}
                             ref={datePickerRef} 
                             value={dateValue}
                             onChange={(value) => {
                                 setDateValue(value)
                             }}
+                            minDate={new Date().setDate(date.day)}
                         />
                         </div>
                         }
@@ -275,7 +342,7 @@ const EditReserv = (props) => {
                                 option: (provided, state) => ({
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
-                                color: `${tableClashed.includes(reserv.table) && state.data.label === reserv.timeReservation ? "red" : "#506690"}`,
+                                color: `${tableClashed.includes(reservation.table) && state.data.label === reserv.timeReservation ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
                                 container: (provided) => ({
@@ -285,11 +352,11 @@ const EditReserv = (props) => {
                                 }),
                                 placeholder: (provided) => ({
                                     ...provided,
-                                    color: `${tableClashed.includes(reserv.table) ? "red" : "#506690"}`,
+                                    color: `${tableClashed.includes(reservation.table) ? "red" : "#506690"}`,
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${tableClashed.includes(reserv.table) && state.data.label === reserv.timeReservation ? "red" : "#506690"}`,
+                                    color: `${tableClashed.includes(reservation.table) && state.data.label === reserv.timeReservation ? "red" : "#506690"}`,
                                 })
                             }}
                         />
@@ -318,7 +385,7 @@ const EditReserv = (props) => {
                                 option: (provided, state) => ({
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
-                                color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) && state.data.label === reserv.adultsReservation ? "red" : "#506690"}`,
+                                color: `${state.value > reservation.numberChairs - reservation.childrenReservation ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
                                 container: (provided) => ({
@@ -328,11 +395,11 @@ const EditReserv = (props) => {
                                 }),
                                 placeholder: (provided) => ({
                                     ...provided,
-                                    color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) ? "red" : "#506690"}`,
+                                    color: `${reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "red" : "#506690"}`,
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) && state.data.label === reserv.adultsReservation ? "red" : "#506690"}`,
+                                    color: `${reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) && state.data.label === reservation.adultsReservation ? "red" : "#506690"}`,
                                 })
                             }}
                         />
@@ -360,7 +427,7 @@ const EditReserv = (props) => {
                                 option: (provided, state) => ({
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
-                                color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) && state.data.label === reserv.childrenReservation ? "red" : "#506690"}`,
+                                color: `${state.value > reservation.numberChairs - reservation.adultsReservation ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
                                 container: (provided) => ({
@@ -370,11 +437,11 @@ const EditReserv = (props) => {
                                 }),
                                 placeholder: (provided) => ({
                                     ...provided,
-                                    color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) ? "red" : "#506690"}`,
+                                    color: `${reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "red" : "#506690"}`,
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation) && state.data.label === reserv.childrenReservation ? "red" : "#506690"}`,
+                                    color: `${reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) && state.data.label === reservation.childrenReservation ? "red" : "#506690"}`,
                                 })
                             }}
                         />
@@ -390,7 +457,7 @@ const EditReserv = (props) => {
                         :
                         <Select     
                                 // value={reservation.adultsReservation}
-                            onChange={handleSelect}
+                            onChange={handleChairs}
                             options={tablesReserv} 
                             placeholder={reserv.table}
                             className="select-edit-reserv"
@@ -402,7 +469,10 @@ const EditReserv = (props) => {
                                 option: (provided, state) => ({
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
-                                color: `${(tableClashed.includes(reserv.table) || reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation)) && state.data.label === reserv.table ? "red" : "#506690"}`,
+                                color: `${tableClashed.includes(state.data.label) || 
+                                        chairs[state.value] < reservation.adultsReservation + reservation.childrenReservation ||
+                                        containTables.includes(state.data.label)
+                                        ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
                                 container: (provided) => ({
@@ -412,19 +482,23 @@ const EditReserv = (props) => {
                                 }),
                                 placeholder: (provided) => ({
                                     ...provided,
-                                    color: `${(tableClashed.includes(reserv.table) || reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation)) ? "red" : "#506690"}`,
+                                    color: `${(tableClashed.includes(reservation.table) || 
+                                            reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation)) ? 
+                                            "red" : "#506690"}`,
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${(tableClashed.includes(reserv.table) || reserv.numberChairs < (reserv.adultsReservation + reserv.childrenReservation)) && state.data.label === reserv.table ? "red" : "#506690"}`,
+                                    color: `${(tableClashed.includes(reservation.table) || containTables.includes(state.data.label) || 
+                                            reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation)) &&
+                                            state.data.label === reservation.table ? "red" : "#506690"}`,
                                 })
                             }}
                         />}
                     </div>
-                    <div className="warn-field" style={{display: tableClashed.includes(reserv.table) ? "flex" : "none"}}>
+                    <div className="warn-field" style={{display: tableClashed.includes(reservation.table) || checkClashed === true ? "flex" : "none"}}>
                         <box-icon name='error-circle' color="#DF4759" style={{marginRight: "5px"}}></box-icon>
                         Clashes with an ongoing reservation.</div>
-                    <div className="warn-field" style={{display: reserv.numberChairs < (reserv.adultsReservation + reservation.childrenReservation) ? "flex" : "none"}}>
+                    <div className="warn-field" style={{display: reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "flex" : "none"}}>
                         <box-icon name='error-circle' color="#DF4759" style={{marginRight: "5px"}}></box-icon>
                         Total pax exceeds table's capacity.
                     </div>
@@ -502,7 +576,7 @@ const EditReserv = (props) => {
                         <div>None</div>
                     </div>
                 </div>
-                <div className="footer-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : "flex"}}>
+                <div className="footer-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" || reserv.statusReservation === "Completed" ? "none" : "flex"}}>
                     <div className="cancel-reserv" onClick={() => (setCancelReserv(!cancelReserv), prepareCancel())}>Cancel Reservation</div>
                 </div>
             </div>

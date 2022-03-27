@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useContext} from "react";
+import React, {useState, useRef, useEffect, useContext, useCallback} from "react";
 import './modalBooking.scss'
 import DatePicker from "react-multi-date-picker";
 import { DateObject } from "react-multi-date-picker";
@@ -15,13 +15,25 @@ const ModalBooking = (props) => {
     const [dateSelect, setDateSelect] = useState(0)
     const [dateValue, setDateValue] = useState(false)
     const [method, setMethod] = useState(3)
-    const [type, setType] = useState(0)
+    const [type, setType] = useState([])
     const date = new DateObject()
     const [customers, setCustomers] = useState([])
     const [occasionSelect, setOccasionSelect] = useState([])
     const setShowModal = props.setShowModal
     const showModal = props.showModal
     const {reset, setReset} = useContext(ResetContext)
+    const [checkReserv, setCheckReserv] = useState([])
+    const [handleExcept, setHandleExcept] = useState(true)
+
+
+    const [width, setWidth]   = useState(window.innerWidth);
+    const updateDimensions = () => {
+      setWidth(window.innerWidth);
+    }
+    useEffect(() => {
+        window.addEventListener("resize", updateDimensions);
+        return () => window.removeEventListener("resize", updateDimensions);
+    }, [width]);
  
     const [reservation, setReservation] = useState({
         adultsReservation: "",
@@ -35,7 +47,7 @@ const ModalBooking = (props) => {
         customerReservation: "",
         statusReservation: "Booked",
         occasion: ""
-    }, [showModal])
+    })
     useEffect(() => {
         const fetchCustomers = async () =>  {
           try {
@@ -49,12 +61,16 @@ const ModalBooking = (props) => {
       }, [])
     
     const fetchReservations = async () => {
-        try {
-            await reservationAPI.post(reservation)
-            setShowModal(!showModal)
-            setReset(!reset)
-        } catch(error) {
-            console.log(error)
+        if(checkReserv.includes(1) && checkReserv.includes(2) && checkReserv.includes(3) && checkReserv.includes(4)) {
+            try {
+                await reservationAPI.post(reservation)
+                setShowModal(!showModal)
+                setReset(!reset)
+            } catch(error) {
+                console.log(error)
+            }
+        } else {
+            setHandleExcept(false)
         }
     }
 
@@ -67,6 +83,7 @@ const ModalBooking = (props) => {
 
 
     const adults = [
+        { value: '0', label: 0, id:'adultsReservation'},
         { value: '1', label: 1, id:'adultsReservation'},
         { value: '2', label: 2, id:'adultsReservation'},
         { value: '3', label: 3, id:'adultsReservation'},
@@ -75,6 +92,7 @@ const ModalBooking = (props) => {
         { value: '6', label: 6, id:'adultsReservation'}
     ]
     const children = [
+        { value: '0', label: 0, id:'childrenReservation'},
         { value: '1', label: 1, id:'childrenReservation'},
         { value: '2', label: 2, id:'childrenReservation'},
         { value: '3', label: 3, id:'childrenReservation'},
@@ -178,6 +196,15 @@ const ModalBooking = (props) => {
         const newReservation={...reservation}
         newReservation[options.id] = options.label
         setReservation(newReservation)
+        if(options.id === "adultsReservation" && !checkReserv.includes(1)) {
+            setCheckReserv(prev => [...prev, 1])
+        }
+        if(options.id === "childrenReservation" && !checkReserv.includes(2)) {
+            setCheckReserv(prev => [...prev, 2])
+        }
+        if(options.id === "timeReservation" && !checkReserv.includes(3)) {
+            setCheckReserv(prev => [...prev, 3])
+        }
     }
 
     const handleChairs = (options) => {
@@ -202,35 +229,34 @@ const ModalBooking = (props) => {
         const newReservation={...reservation}
         newReservation["customerReservation"] = customers[options.value-1]
         setReservation(newReservation)
+        if(!checkReserv.includes(4)) {
+            setCheckReserv(prev => [...prev, 4])
+        }
     }
 
     const handleOccasion = (index) => {
         if (occasionSelect.includes(occasions[index]) === false) {
-            setOccasionSelect([...occasionSelect, occasions[index]])
+            setOccasionSelect(occasionSelect => [...occasionSelect, occasions[index]])
           } else {
             setOccasionSelect((currentArray) => currentArray.filter((remainElement) => remainElement !== occasions[index]))
           }
+    }
+    useEffect(() => {
         const newReservation={...reservation}
         newReservation["occasion"] = occasionSelect
-        // console.log(occasionSelect);
         setReservation(newReservation)
+    }, [occasionSelect])
+
+    const handleTypeNotify = (number) => {
+        if (type.includes(number) === false) {
+            setType(prev => [...prev, number])
+          } else {
+            setType((currentArray) => currentArray.filter((remainElement) => remainElement !== number))
+          }
     }
 
-
-    // function handleCancel() {
-    //     const newReservation={...reservation}
-    //     newReservation["note"] = ""
-    //     newReservation["request"] = ""
-    //     newReservation["adultsReservation"] = ""
-    //     newReservation["childrenReservation"] = ""
-    //     newReservation["timeReservation"] = ""
-    //     newReservation["table"] = ""
-    //     setResetValue("")
-    //     setResevation(newReservation)
-    // }
-
     return (
-        <div className={"modalBooking animate__animated " + props.styleName }>
+        <div className={`modalBooking animate__animated ${showModal ? "animate__fadeInUp" : "animate__fadeOutDown"}`} style={{zIndex: showModal ? null : 0}}>
             <div className="booking-header">
                 <div className="booking-title">Add New</div>
                 <div className="booking-close" onClick={() => props.setShowModal(!props.showModal)}>
@@ -258,12 +284,13 @@ const ModalBooking = (props) => {
                     <div className="reservation-details">
                         <div className="containers-title">RESERVATION DETAILS</div>
                         <div className="reservation-date">
-                            <span>Date</span>
+                            <span className="reservation-date-title">Date</span>
+                            <div className="container-dates">
                             {
                                 weekdaysShort.map((weekday, idx) => {
                                     if(weekday === date.weekDay.shortName) {
                                         return (
-                                            <div style={{display: "flex"}} key={idx}>
+                                            <>
                                             <div className="reservation-date-item"
                                             onClick = {() => (setDateSelect(0), handleDate(date))}
                                             style={{
@@ -324,7 +351,7 @@ const ModalBooking = (props) => {
                                                 <p>{date.day+5}</p>
                                                 <p>{date.month.shortName}</p>
                                             </div>
-                                            </div>
+                                            </>
                                         )
                                     }
                                 })
@@ -347,7 +374,8 @@ const ModalBooking = (props) => {
                                 <p>{dateValue ? dateValue.weekDay.shortName : null}</p>
                                 <p>{dateValue ? dateValue.day : null}</p>
                                 <p>{dateValue ? dateValue.month.shortName : null}</p>
-                              <DatePicker 
+                                <DatePicker 
+                                    minDate={new Date().setDate(date.day)}
                                     animations={[
                                      opacity(), 
                                      transition({ from: 35, duration: 800 })
@@ -362,6 +390,7 @@ const ModalBooking = (props) => {
                                         handleDate(value)
                                     }}
                                 />
+                            </div>
                             </div>
                         </div> 
                         <div className="reservation-numberPeople">
@@ -384,6 +413,10 @@ const ModalBooking = (props) => {
                                     color: "#506690 !important",
                                     fontWeight: "400"
                                     }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: `${handleExcept === false && !checkReserv.includes(1) ? "#DF4759" : "#a3a3a3"}`
+                                    })
                                 }}
                                 />
                             </div>
@@ -406,6 +439,10 @@ const ModalBooking = (props) => {
                                     color: "#506690 !important",
                                     fontWeight: "400"
                                     }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: `${handleExcept === false && !checkReserv.includes(2) ? "#DF4759" : "#a3a3a3"}`
+                                    })
                                 }} 
                                 />
                             </div>
@@ -443,6 +480,10 @@ const ModalBooking = (props) => {
                                             ...provided,
                                             width: 300,
                                         }),
+                                        placeholder: (provided) => ({
+                                            ...provided,
+                                            color: `${handleExcept === false && !checkReserv.includes(3) ? "#DF4759" : "#a3a3a3"}`
+                                        })
                                     }}
                                 />
                             </div>
@@ -504,7 +545,7 @@ const ModalBooking = (props) => {
                             value={reservation.request}
                             id="request"
                             onChange={(e) => handleChange(e)}
-                             placeholder="Specify if any" className="request-input"/>
+                             placeholder="Specify if any"/>
                         </div>
                         <div className="reservation-notes">
                             <div className="notes-title">Reservation Notes by Staff</div>
@@ -512,7 +553,7 @@ const ModalBooking = (props) => {
                             value={reservation.note}
                             id="note"
                             onChange={(e) => handleChange(e)}
-                             placeholder="Specify if any" className="notes-input" />
+                             placeholder="Specify if any" />
                         </div>
                     </div>
                 </div>
@@ -541,6 +582,10 @@ const ModalBooking = (props) => {
                                         ...provided,
                                         width: 265,
                                     }),
+                                    placeholder: (provided) => ({
+                                        ...provided,
+                                        color: `${handleExcept === false && !checkReserv.includes(4) ? "#DF4759" : "#a3a3a3"}`
+                                    })
                                 }}
                         />
                     </div>
@@ -560,14 +605,14 @@ const ModalBooking = (props) => {
                         </div>
                         <div className="types-notify">
                             <div className="title-notify">Type of Notification</div>
-                            <div className="type-notify" onClick={() => setType(1)}>
+                            <div className="type-notify" onClick={() => handleTypeNotify(1)}>
                                 <p className="type-notify-btn" 
-                                style={{backgroundColor: type===1 ? "#7C69EF" : null}}>
+                                style={{backgroundColor: type.includes(1) ? "#7C69EF" : null}}>
                                     <box-icon name='check' size="lg" color="#fff"></box-icon></p>
                                 Reservation Confirmation</div>
-                            <div className="type-notify" onClick={() => setType(2)}>
+                            <div className="type-notify" onClick={() => handleTypeNotify(2)}>
                                 <p className="type-notify-btn" 
-                                style={{backgroundColor: type===2 ? "#7C69EF" : null}}>
+                                style={{backgroundColor: type.includes(2) ? "#7C69EF" : null}}>
                                     <box-icon name='check' size="lg" color="#fff"></box-icon></p>
                                 Reservation Reminder</div>
                         </div> 

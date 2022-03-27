@@ -1,0 +1,53 @@
+@mixin mobile {
+    @media only screen and (max-width: 650px) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media only screen and (max-width: 1024px) {
+        @content;
+    }
+}
+
+.date-picker {
+    display: flex;
+    align-items: center;
+    position: relative;
+    .input-date {
+        width: 265px;
+        height: 40px;
+        text-align: center;
+        border: 1px solid rgba(0, 40, 100, 0.12);
+        border-radius: 3px;
+        font-size: 15px;
+        list-style: 20px;
+        @include tablet {
+            width: 200px;
+        }
+    }
+}
+
+.date-prevArrow {
+    position: absolute;
+    left: 0;
+    padding: 5px;
+    @include tablet {
+        display: none;
+    }
+}
+
+.date-nextArrow {
+    position: absolute;
+    right: 0;
+    padding: 5px;
+    @include tablet {
+        display: none;
+    }
+}
+
+.date-icon {
+    position: absolute;
+    right: 30px;
+    top: 6px;
+}
