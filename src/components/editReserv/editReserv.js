@@ -7,6 +7,7 @@ import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, War
 import {MdOutlineChair} from "react-icons/md"
 import warningSign from '../../image/warning-sign.png'
 import { DateObject } from "react-multi-date-picker";
+import { ReservationsContext } from '../../App'
 // import { useSelector, useDispatch } from "react-redux";
 // import { reset } from "../../actions/reset" 
 
@@ -19,9 +20,11 @@ const EditReserv = (props) => {
     const datePickerRef = useRef()
     const {tableClashed} = useContext(TableClashed)
     const date = new DateObject()
+    const [checkClashed, setCheckClashed] = useState(false)
 
     const [reservation, setReservartion] = useState(reserv)
     const [occasionSelect, setOccasionSelect] = useState(reserv.occasion)
+    const {reservations} = useContext(ReservationsContext)
 
     const {setNotify} = useContext(NotifyContext)
     const {setReservEdit} = useContext(ReservNotify)
@@ -29,6 +32,7 @@ const EditReserv = (props) => {
     const {setTableFlow} = useContext(TableFlow)
     const {setWarning} = useContext(WarnContext)
     const {reset, setReset} = useContext(ResetContext)
+    const [containTables, setContainTables] = useState([])
 
 
     // const dispatch = useDispatch()
@@ -178,6 +182,22 @@ const EditReserv = (props) => {
         setReservEdit(reservation)
     }
 
+    useEffect(() => {
+        setCheckClashed(false)
+        setContainTables([])
+        const CheckClashed = () => {
+            reservations.forEach((item) => {
+                if(item.table == reservation.table && item.id !== reservation.id) {
+                    setCheckClashed(true)
+                }
+                if(item.id !== reserv.id) {
+                    setContainTables((prev) => [...prev, item.table])
+                }
+            })
+        }
+        CheckClashed()
+    }, [reservation.table, reservation]) 
+
 
     let numberPeople = reserv.adultsReservation + reserv.childrenReservation
     return (
@@ -186,7 +206,12 @@ const EditReserv = (props) => {
                 <div className="navigate-edit-reserv">
                     <div className="back-reserv" onClick={() => (setToggleEdit(null), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
                     {
-                    tableClashed.includes(reservation.table) && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
+                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && (tableClashed.includes(reservation.table) || checkClashed === true)?
+                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
+                        onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
+                        <box-icon name='save' color='#7C69EF'></box-icon> 
+                    Save Changes</div> :
+                    tableClashed.includes(reservation.table) || checkClashed && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
@@ -194,11 +219,6 @@ const EditReserv = (props) => {
                     reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && !tableClashed.includes(reservation.table) ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity."))}>
-                        <box-icon name='save' color='#7C69EF'></box-icon> 
-                    Save Changes</div> :
-                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && tableClashed.includes(reservation.table) ?
-                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
-                        onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" || reserv.statusReservation === "Completed" ? "none" : null}}
@@ -450,7 +470,8 @@ const EditReserv = (props) => {
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
                                 color: `${tableClashed.includes(state.data.label) || 
-                                        chairs[state.value] < reservation.adultsReservation + reservation.childrenReservation
+                                        chairs[state.value] < reservation.adultsReservation + reservation.childrenReservation ||
+                                        containTables.includes(state.data.label)
                                         ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
@@ -467,14 +488,14 @@ const EditReserv = (props) => {
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-                                    color: `${(tableClashed.includes(reservation.table) || 
+                                    color: `${(tableClashed.includes(reservation.table) || containTables.includes(state.data.label) || 
                                             reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation)) &&
                                             state.data.label === reservation.table ? "red" : "#506690"}`,
                                 })
                             }}
                         />}
                     </div>
-                    <div className="warn-field" style={{display: tableClashed.includes(reservation.table) ? "flex" : "none"}}>
+                    <div className="warn-field" style={{display: tableClashed.includes(reservation.table) || checkClashed === true ? "flex" : "none"}}>
                         <box-icon name='error-circle' color="#DF4759" style={{marginRight: "5px"}}></box-icon>
                         Clashes with an ongoing reservation.</div>
                     <div className="warn-field" style={{display: reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "flex" : "none"}}>

@@ -84,14 +84,7 @@ const Sidebar = () => {
     } else {
       setShowDetail((currentArray) => currentArray.filter((remainElement) => remainElement !== index))
     }
-    // if (reservations[index].statusReservation === "Confirmed") {
-    //   setShowConfirm((oldArray) => [...oldArray, index])
-    // }
-    // if (reservations[index].statusReservation === "Seated") {
-    //   setShowSeat((oldArray) => [...oldArray, index])
-    // }
   }
-
 
   const handleShowEdit = (index) => {
     if (showEdit === index) {
@@ -117,11 +110,14 @@ const Sidebar = () => {
       setNumberCover(prevNumber => prevNumber + (reservation.childrenReservation + reservation.adultsReservation))
       if(reservation.statusReservation === "Booked" || reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Late") {
         setNumberUpcomming(prevNumber => prevNumber+1)
-      } else if(reservation.statusReservation === "Seated") {
+      } 
+      if(reservation.statusReservation === "Seated") {
         setNumberSeated(prevNumber => prevNumber+1)
-      } else if(reservation.statusReservation === "Completed") {
+      } 
+      if(reservation.statusReservation === "Completed") {
         setNumberCompleted(prevNumber => prevNumber+1)
-      } else if(reservation.statusReservation === "No Show" || reservation.statusReservation === "Cancelled") {
+      } 
+      if(reservation.statusReservation === "No Show" || reservation.statusReservation === "Cancelled") {
         setNumberAbsent(prevNumber => prevNumber+1)
       }
     })
@@ -182,7 +178,10 @@ const Sidebar = () => {
     reservations.forEach((reservation, index) => {
       let count = 0
       reservations.forEach((reserv, idx) => {
-        if(reservation.table === reserv.table && addMinutes(getTwentyFourHourTime(reservation.timeReservation),60) > getTwentyFourHourTime(reserv.timeReservation) && getTwentyFourHourTime(reservation.timeReservation) < getTwentyFourHourTime(reserv.timeReservation)) {
+        if(reservation.table === reserv.table && reservation.statusReservation !== "No Show" && 
+          addMinutes(getTwentyFourHourTime(reservation.timeReservation),60) > getTwentyFourHourTime(reserv.timeReservation) && 
+          getTwentyFourHourTime(reservation.timeReservation) < getTwentyFourHourTime(reserv.timeReservation)) 
+        {
           count++
         }
       })
@@ -286,7 +285,7 @@ const Sidebar = () => {
             return (
               <div key={index}>
               <div className="container-reservation" key={index} onClick={() => handleShowReserv(index)} 
-              style={{background: tableClashed.includes(reservation.table) || reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "#FFEEEB" : null,
+              style={{background: tableClashed.includes(reservation.table) || reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) && reservation.table !== "Unassigned" ? "#FFEEEB" : null,
                       display: showEdit !== null ? "none" : "block"}}>
                 <span className="first-name">{reservation.customerReservation.firstName} </span>
                 <span className="last-name">{reservation.customerReservation.lastName}</span>
@@ -294,7 +293,7 @@ const Sidebar = () => {
                   <box-icon name='phone' color='#506690'></box-icon>
                   {reservation.timeReservation}</span>
                 <div>
-                  {reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation ?
+                  {reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && reservation.table !== "Unassigned" ?
                     <p className="number-people" style={{color: "#DF4759"}}>
                       <box-icon name='group' color='#DF4759' style={{marginRight: "4px"}}></box-icon> 
                       {numberPeople}</p>
@@ -436,13 +435,13 @@ const Sidebar = () => {
                   </div>
                 </div>
               </div>
-              {/* style={{display: editReserv ? "block" : "none"}} */}
-              <div className="container-edit-reserv"
-              style={{display: showEdit === index ? 'block' : 'none'}}> 
+              <div className="container-edit-reserv"> 
+              {showEdit === index ?
                 <EditReserv 
                 idxReserv={reservation.id} editReserv={reservation} 
                 toggoleEdit={showEdit} setToggleEdit={setShowEdit}
                 />
+              : null }
               </div>
               </div>
               )
