@@ -51,7 +51,11 @@ const Tables = () => {
         }
         }
         handleTables()
+<<<<<<< HEAD
     },[reservations, tableFlow, containerTable, datesReserv])
+=======
+    },[reservations, tableFlow, containerTable, datesReserv, tableClashed])
+>>>>>>> 320312c (update code)
 
     // const [precentReserv, setPrecentReserv] = useState([0])
     // const [idx, setIdx] = useState(0)
