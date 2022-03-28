@@ -76,11 +76,6 @@ function Home() {
       </TransformWrapper>
       <StatusTable />
       {showModal ? <ModalBooking showModal={showModal} setShowModal={setShowModal}/>: null}
-<<<<<<< HEAD
-      {/* <ModalBooking showModal={showModal} setShowModal={setShowModal}/> */}
-      {/* {time > "09:00" ? */}
-=======
->>>>>>> 320312c (update code)
         <div className="add-new" onClick={() => setShowModal(!showModal)}>{showModal ? <box-icon name='x' size="md" color="white" style={{marginTop: "10px"}}></box-icon> : "+"}</div>
       {/* : <div className="add-new" style={{opacity: "0.5"}}>+</div>} */}
       </div>

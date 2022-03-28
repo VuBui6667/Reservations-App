@@ -84,17 +84,7 @@ const Sidebar = () => {
     } else {
       setShowDetail((currentArray) => currentArray.filter((remainElement) => remainElement !== index))
     }
-<<<<<<< HEAD
-    // if (reservations[index].statusReservation === "Confirmed") {
-    //   setShowConfirm((oldArray) => [...oldArray, index])
-    // }
-    // if (reservations[index].statusReservation === "Seated") {
-    //   setShowSeat((oldArray) => [...oldArray, index])
-    // }
-=======
->>>>>>> 320312c (update code)
   }
-
 
   const handleShowEdit = (index) => {
     if (showEdit === index) {
@@ -120,13 +110,6 @@ const Sidebar = () => {
       setNumberCover(prevNumber => prevNumber + (reservation.childrenReservation + reservation.adultsReservation))
       if(reservation.statusReservation === "Booked" || reservation.statusReservation === "Confirmed" || reservation.statusReservation === "Late") {
         setNumberUpcomming(prevNumber => prevNumber+1)
-<<<<<<< HEAD
-      } else if(reservation.statusReservation === "Seated") {
-        setNumberSeated(prevNumber => prevNumber+1)
-      } else if(reservation.statusReservation === "Completed") {
-        setNumberCompleted(prevNumber => prevNumber+1)
-      } else if(reservation.statusReservation === "No Show" || reservation.statusReservation === "Cancelled") {
-=======
       } 
       if(reservation.statusReservation === "Seated") {
         setNumberSeated(prevNumber => prevNumber+1)
@@ -135,7 +118,6 @@ const Sidebar = () => {
         setNumberCompleted(prevNumber => prevNumber+1)
       } 
       if(reservation.statusReservation === "No Show" || reservation.statusReservation === "Cancelled") {
->>>>>>> 320312c (update code)
         setNumberAbsent(prevNumber => prevNumber+1)
       }
     })
@@ -196,14 +178,10 @@ const Sidebar = () => {
     reservations.forEach((reservation, index) => {
       let count = 0
       reservations.forEach((reserv, idx) => {
-<<<<<<< HEAD
-        if(reservation.table === reserv.table && addMinutes(getTwentyFourHourTime(reservation.timeReservation),60) > getTwentyFourHourTime(reserv.timeReservation) && getTwentyFourHourTime(reservation.timeReservation) < getTwentyFourHourTime(reserv.timeReservation)) {
-=======
         if(reservation.table === reserv.table && reservation.statusReservation !== "No Show" && 
           addMinutes(getTwentyFourHourTime(reservation.timeReservation),60) > getTwentyFourHourTime(reserv.timeReservation) && 
           getTwentyFourHourTime(reservation.timeReservation) < getTwentyFourHourTime(reserv.timeReservation)) 
         {
->>>>>>> 320312c (update code)
           count++
         }
       })
@@ -307,11 +285,7 @@ const Sidebar = () => {
             return (
               <div key={index}>
               <div className="container-reservation" key={index} onClick={() => handleShowReserv(index)} 
-<<<<<<< HEAD
-              style={{background: tableClashed.includes(reservation.table) || reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "#FFEEEB" : null,
-=======
               style={{background: tableClashed.includes(reservation.table) || reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) && reservation.table !== "Unassigned" ? "#FFEEEB" : null,
->>>>>>> 320312c (update code)
                       display: showEdit !== null ? "none" : "block"}}>
                 <span className="first-name">{reservation.customerReservation.firstName} </span>
                 <span className="last-name">{reservation.customerReservation.lastName}</span>
@@ -319,11 +293,7 @@ const Sidebar = () => {
                   <box-icon name='phone' color='#506690'></box-icon>
                   {reservation.timeReservation}</span>
                 <div>
-<<<<<<< HEAD
-                  {reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation ?
-=======
                   {reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && reservation.table !== "Unassigned" ?
->>>>>>> 320312c (update code)
                     <p className="number-people" style={{color: "#DF4759"}}>
                       <box-icon name='group' color='#DF4759' style={{marginRight: "4px"}}></box-icon> 
                       {numberPeople}</p>
@@ -465,22 +435,13 @@ const Sidebar = () => {
                   </div>
                 </div>
               </div>
-              {/* style={{display: editReserv ? "block" : "none"}} */}
-<<<<<<< HEAD
-              <div className="container-edit-reserv"
-              style={{display: showEdit === index ? 'block' : 'none'}}> 
-=======
               <div className="container-edit-reserv"> 
               {showEdit === index ?
->>>>>>> 320312c (update code)
                 <EditReserv 
                 idxReserv={reservation.id} editReserv={reservation} 
                 toggoleEdit={showEdit} setToggleEdit={setShowEdit}
                 />
-<<<<<<< HEAD
-=======
               : null }
->>>>>>> 320312c (update code)
               </div>
               </div>
               )

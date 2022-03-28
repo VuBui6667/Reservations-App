@@ -3,7 +3,6 @@ import Table from '../table/table'
 import { ResetContext, TimeReserv } from "../../App"
 import { DatesReserv, TableClashed, TableFlow, ReservationsContext } from "../../App"
 import { DateObject } from "react-multi-date-picker";
-import reservationAPI from '../../api/reservationAPI'
 
 
 const Tables = () => {
@@ -51,11 +50,7 @@ const Tables = () => {
         }
         }
         handleTables()
-<<<<<<< HEAD
-    },[reservations, tableFlow, containerTable, datesReserv])
-=======
     },[reservations, tableFlow, containerTable, datesReserv, tableClashed])
->>>>>>> 320312c (update code)
 
     // const [precentReserv, setPrecentReserv] = useState([0])
     // const [idx, setIdx] = useState(0)

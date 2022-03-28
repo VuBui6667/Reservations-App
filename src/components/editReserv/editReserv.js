@@ -7,10 +7,7 @@ import { NotifyContext, ReservNotify, CancelReserv, TableFlow, TableClashed, War
 import {MdOutlineChair} from "react-icons/md"
 import warningSign from '../../image/warning-sign.png'
 import { DateObject } from "react-multi-date-picker";
-<<<<<<< HEAD
-=======
 import { ReservationsContext } from '../../App'
->>>>>>> 320312c (update code)
 // import { useSelector, useDispatch } from "react-redux";
 // import { reset } from "../../actions/reset" 
 
@@ -23,10 +20,7 @@ const EditReserv = (props) => {
     const datePickerRef = useRef()
     const {tableClashed} = useContext(TableClashed)
     const date = new DateObject()
-<<<<<<< HEAD
-=======
     const [checkClashed, setCheckClashed] = useState(false)
->>>>>>> 320312c (update code)
 
     const [reservation, setReservartion] = useState(reserv)
     const [occasionSelect, setOccasionSelect] = useState(reserv.occasion)
@@ -38,10 +32,7 @@ const EditReserv = (props) => {
     const {setTableFlow} = useContext(TableFlow)
     const {setWarning} = useContext(WarnContext)
     const {reset, setReset} = useContext(ResetContext)
-<<<<<<< HEAD
-=======
     const [containTables, setContainTables] = useState([])
->>>>>>> 320312c (update code)
 
 
     // const dispatch = useDispatch()
@@ -215,16 +206,12 @@ const EditReserv = (props) => {
                 <div className="navigate-edit-reserv">
                     <div className="back-reserv" onClick={() => (setToggleEdit(null), setTableFlow(null))}><box-icon name='arrow-back'></box-icon></div>
                     {
-<<<<<<< HEAD
-                    tableClashed.includes(reservation.table) && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
-=======
                     reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && (tableClashed.includes(reservation.table) || checkClashed === true)?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
                     tableClashed.includes(reservation.table) || checkClashed && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
->>>>>>> 320312c (update code)
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
@@ -234,14 +221,6 @@ const EditReserv = (props) => {
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
-<<<<<<< HEAD
-                    reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation && tableClashed.includes(reservation.table) ?
-                    <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
-                        onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
-                        <box-icon name='save' color='#7C69EF'></box-icon> 
-                    Save Changes</div> :
-=======
->>>>>>> 320312c (update code)
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" || reserv.statusReservation === "Completed" ? "none" : null}}
                         onClick={() => (saveReserv(), setTableFlow(null))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
@@ -491,12 +470,8 @@ const EditReserv = (props) => {
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
                                 color: `${tableClashed.includes(state.data.label) || 
-<<<<<<< HEAD
-                                        chairs[state.value] < reservation.adultsReservation + reservation.childrenReservation
-=======
                                         chairs[state.value] < reservation.adultsReservation + reservation.childrenReservation ||
                                         containTables.includes(state.data.label)
->>>>>>> 320312c (update code)
                                         ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),
@@ -513,22 +488,14 @@ const EditReserv = (props) => {
                                 }),
                                 singleValue: (provided, state) => ({
                                     ...provided,
-<<<<<<< HEAD
-                                    color: `${(tableClashed.includes(reservation.table) || 
-=======
                                     color: `${(tableClashed.includes(reservation.table) || containTables.includes(state.data.label) || 
->>>>>>> 320312c (update code)
                                             reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation)) &&
                                             state.data.label === reservation.table ? "red" : "#506690"}`,
                                 })
                             }}
                         />}
                     </div>
-<<<<<<< HEAD
-                    <div className="warn-field" style={{display: tableClashed.includes(reservation.table) ? "flex" : "none"}}>
-=======
                     <div className="warn-field" style={{display: tableClashed.includes(reservation.table) || checkClashed === true ? "flex" : "none"}}>
->>>>>>> 320312c (update code)
                         <box-icon name='error-circle' color="#DF4759" style={{marginRight: "5px"}}></box-icon>
                         Clashes with an ongoing reservation.</div>
                     <div className="warn-field" style={{display: reservation.numberChairs < (reservation.adultsReservation + reservation.childrenReservation) ? "flex" : "none"}}>
