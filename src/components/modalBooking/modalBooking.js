@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useContext, useCallback} from "react";
+import React, {useState, useRef, useEffect, useContext} from "react";
 import './modalBooking.scss'
 import DatePicker from "react-multi-date-picker";
 import { DateObject } from "react-multi-date-picker";

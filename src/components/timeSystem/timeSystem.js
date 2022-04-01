@@ -15,7 +15,7 @@ export default function TimeSystem() {
       setInterval(() => {
           let today = new Date()
           let timeToday = ('0'+today.getHours()).slice(-2) + ':' + ('0'+today.getMinutes()).slice(-2)
-          setTime(timeToday)        
+          setTime(addMinutes(timeToday, -550))        
         })
   }, 5000)
 
@@ -36,7 +36,7 @@ export default function TimeSystem() {
 
     const handleTimeReserv = async(reserv, status) => {
         try {
-            await reservationAPI.patch(reserv.id, {statusReservation: status})
+            await reservationAPI.put(reserv.id, {statusReservation: status})
             setReset(!reset)
         } catch(error) {
             console.log(error)
@@ -45,7 +45,7 @@ export default function TimeSystem() {
 
     const handleNoShow = async(reserv) => {
       try {
-        await reservationAPI.patch(reserv.id, {table: "Unassigned"})
+        await reservationAPI.put(reserv.id, {table: "Unassigned"})
         setReset(!reset)
       } catch(error) {
         console.log(error)

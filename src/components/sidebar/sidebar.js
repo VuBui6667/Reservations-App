@@ -66,7 +66,7 @@ const Sidebar = () => {
 
   const updateStatusReserv = async(id , StatusReserv) => {
     try {
-      const response = await reservationAPI.patch(id, {statusReservation: StatusReserv})
+      const response = await reservationAPI.put(id, {statusReservation: StatusReserv})
       setReset(!reset)
       setReservEdit(response)
       setNotify(true)

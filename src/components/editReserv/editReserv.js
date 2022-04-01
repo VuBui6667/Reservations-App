@@ -168,7 +168,7 @@ const EditReserv = (props) => {
 
     const saveReserv = async() => {
         try {
-        await reservationAPI.patch(idxReserv, reservation)
+        await reservationAPI.put(idxReserv, reservation)
         setReset(!reset)
         setToggleEdit(null)
         setNotify(true)

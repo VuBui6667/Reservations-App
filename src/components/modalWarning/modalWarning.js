@@ -15,7 +15,7 @@ const ModalWarning = () => {
 
     const saveReserv = async() => {
         try {
-        const response = await reservationAPI.patch(reservEdit.id, reservEdit)
+        const response = await reservationAPI.put(reservEdit.id, reservEdit)
         setReset(!reset)
         setWarning(false)
         setNotify(true)
