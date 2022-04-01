@@ -13,9 +13,9 @@ const reservationAPI = {
         const url = `/reservations?dates=${dates}`
         return axiosClient.get(url)
     },
-    patch: (id, data) => {
+    put: (id, data) => {
         const url= `/reservations/${id}`
-        return axiosClient.patch(url, data)
+        return axiosClient.put(url, data)
     }
 }
 

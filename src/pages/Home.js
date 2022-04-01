@@ -6,7 +6,7 @@ import ModalBooking from '../components/modalBooking/modalBooking'
 import '../components/zoom/zoom.scss'
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";  
 // import notifyEditAPI from '../api/notifyEditAPI';
-import { NotifyContext, ReservNotify, Skeleton, TimeReserv } from '../App'
+import { NotifyContext, ReservNotify, Skeleton, TimeReserv, ReservationsContext } from '../App'
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
@@ -16,6 +16,7 @@ function Home() {
   const {notify, setNotify} = useContext(NotifyContext)
   const {reservEdit} = useContext(ReservNotify)
   const {time} = useContext(TimeReserv)
+  const {reservations} = useContext(ReservationsContext)
 
   const {skeleton, setSkeleton} = useContext(Skeleton)
 
@@ -28,13 +29,14 @@ function Home() {
   }, [notify])
 
 
-  useEffect(() => {
-    const timeoutID = window.setTimeout(() => {
-      setSkeleton(false)
-    }, 1500);
 
-    return () => window.clearTimeout(timeoutID );
-  }, [skeleton])
+  // useEffect(() => {
+  //   // const timeoutID = window.setTimeout(() => {
+  //   //   setSkeleton(false)
+  //   // }, 2000);
+
+  //   // return () => window.clearTimeout(timeoutID );
+  // }, [reservations])
 
   return (
     <div className="main-container">

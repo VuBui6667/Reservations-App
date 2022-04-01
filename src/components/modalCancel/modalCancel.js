@@ -14,7 +14,7 @@ const ModalCancel = () => {
 
     const changeStatus = async() => {
         try {
-        const response = await reservationAPI.patch(reservEdit.id, {statusReservation: "Cancelled", table: "Unassigned"})
+        const response = await reservationAPI.put(reservEdit.id, {statusReservation: "Cancelled", table: "Unassigned"})
         setReset(!reset)
         setNotify(true)
         setReservEdit(response)

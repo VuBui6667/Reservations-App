@@ -2,7 +2,7 @@ import axios from 'axios';
 // import queryString from 'query-string';
 
 const axiosClient  = axios.create({
-    baseURL: "https://reservations-app6667.herokuapp.com/",
+    baseURL: "https://6247067a739ac845919610dd.mockapi.io/api/",
     headers: {
         'Content-Type': 'application/json'
     },
