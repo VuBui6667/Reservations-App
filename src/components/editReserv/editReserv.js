@@ -187,10 +187,10 @@ const EditReserv = (props) => {
         setContainTables([])
         const CheckClashed = () => {
             reservations.forEach((item) => {
-                if(item.table == reservation.table && item.id !== reservation.id) {
+                if(item.table === reservation.table && item.id !== reservation.id && item.statusReservation !== "Completed") {
                     setCheckClashed(true)
                 }
-                if(item.id !== reserv.id) {
+                if(item.id !== reserv.id && item.statusReservation !== "Completed") {
                     setContainTables((prev) => [...prev, item.table])
                 }
             })
@@ -211,7 +211,9 @@ const EditReserv = (props) => {
                         onClick={() => (prepareCancel(), setWarning("total pax exceeds table’s capacity and clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
                     Save Changes</div> :
-                    tableClashed.includes(reservation.table) || checkClashed && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) ?
+                    tableClashed.includes(reservation.table) 
+                    // || checkClashed && !(reservation.numberChairs < reservation.adultsReservation + reservation.childrenReservation) 
+                    ?
                     <div className="save-edit-reserv" style={{display: reserv.statusReservation === "Cancelled" ? "none" : null}}
                         onClick={() => (prepareCancel(), setWarning("clashes with an ongoing reservation."))}>
                         <box-icon name='save' color='#7C69EF'></box-icon> 
@@ -470,8 +472,8 @@ const EditReserv = (props) => {
                                 ...provided,
                                 backgroundColor: state.isFocused && "rgba(124, 105, 239, 0.1)",
                                 color: `${tableClashed.includes(state.data.label) || 
-                                        chairs[state.value] < reservation.adultsReservation + reservation.childrenReservation ||
-                                        containTables.includes(state.data.label)
+                                        chairs[state.value] < reservation.adultsReservation + reservation.childrenReservation
+                                        || containTables.includes(state.data.label)
                                         ? "red" : "#506690"}`,
                                 fontWeight: "400"
                                 }),

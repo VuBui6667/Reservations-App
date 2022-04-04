@@ -178,7 +178,7 @@ const Sidebar = () => {
     reservations.forEach((reservation, index) => {
       let count = 0
       reservations.forEach((reserv, idx) => {
-        if(reservation.table === reserv.table && reservation.statusReservation !== "No Show" && 
+        if(reservation.table === reserv.table && reservation.statusReservation !== "No Show" && reservation.statusReservation !== "Completed" &&
           addMinutes(getTwentyFourHourTime(reservation.timeReservation),60) > getTwentyFourHourTime(reserv.timeReservation) && 
           getTwentyFourHourTime(reservation.timeReservation) < getTwentyFourHourTime(reserv.timeReservation)) 
         {
@@ -186,6 +186,7 @@ const Sidebar = () => {
         }
       })
       if(count !== 0) {
+        console.log(123)
         if(!tableClashed.includes(reservation.table) && reservation.table !== "Unassigned") {
           setTableClashed((prevTable) => [...prevTable, reservation.table])
         }
